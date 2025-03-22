@@ -64,7 +64,7 @@ export function MealDetails() {
           startIcon={<EditIcon />}
           onClick={() => navigate(`/meals/${meal.id}/edit`)}
         >
-          Edit Meal
+          Edytuj przepis
         </Button>
       </Box>
 
@@ -108,19 +108,19 @@ export function MealDetails() {
       </Paper>
 
       <Typography variant="h5" component="h2" gutterBottom>
-        Ingredients
+        Składniki
       </Typography>
 
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Ingredient</TableCell>
-              <TableCell align="right">Amount (g)</TableCell>
-              <TableCell align="right">Proteins (g)</TableCell>
-              <TableCell align="right">Carbs (g)</TableCell>
-              <TableCell align="right">Fats (g)</TableCell>
-              <TableCell align="right">Calories (kcal)</TableCell>
+              <TableCell>Składnik</TableCell>
+              <TableCell align="right">Ilość (g)</TableCell>
+              <TableCell align="right">Białko (g)</TableCell>
+              <TableCell align="right">Węglowodany (g)</TableCell>
+              <TableCell align="right">Tłuszcze (g)</TableCell>
+              <TableCell align="right">Kalorie (kcal)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

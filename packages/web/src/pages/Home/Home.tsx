@@ -54,15 +54,15 @@ export function HomePage() {
         <Typography
           variant="h2"
           component="h1"
+          gutterBottom
           sx={{
-            mb: 4,
             background: "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
             backgroundClip: "text",
             textFillColor: "transparent",
             fontWeight: "bold",
           }}
         >
-          Welcome to Recipe Master
+          Witaj w dabelo.pl! 🌟
         </Typography>
       </motion.div>
 
@@ -74,14 +74,13 @@ export function HomePage() {
       >
         <Typography
           variant="h5"
+          gutterBottom
           sx={{
-            mb: 3,
             color: "text.secondary",
             maxWidth: 800,
           }}
         >
-          Your personal kitchen companion for creating and tracking delicious,
-          nutritious meals
+          Twój osobisty asystent zdrowego odżywiania
         </Typography>
       </motion.div>
 
@@ -93,13 +92,40 @@ export function HomePage() {
       >
         <Typography
           variant="body1"
+          paragraph
           sx={{
             color: "text.secondary",
             maxWidth: 600,
           }}
         >
-          Track ingredients, calculate nutrients, and build your recipe
-          collection with ease. Start your culinary journey today! 🌟
+          Odkryj świat świadomego odżywiania! Nasza aplikacja pomoże Ci śledzić
+          wartości odżywcze, planować posiłki i osiągać cele żywieniowe.
+          Przestań zgadywać - zacznij świadomie komponować swoje posiłki z
+          precyzyjnymi danymi o składnikach.
+        </Typography>
+      </motion.div>
+
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={staggerAnimation}
+        custom={3}
+      >
+        <Typography
+          variant="body1"
+          paragraph
+          sx={{
+            color: "text.secondary",
+            maxWidth: 600,
+          }}
+        >
+          Rozpocznij już dziś:
+          <ul style={{ listStyleType: "none", padding: 0 }}>
+            <li>📊 Monitoruj makro i mikroskładniki</li>
+            <li>🥗 Twórz zbilansowane posiłki</li>
+            <li>📱 Śledź swoje postępy</li>
+            <li>💪 Osiągaj cele żywieniowe</li>
+          </ul>
         </Typography>
       </motion.div>
     </Box>

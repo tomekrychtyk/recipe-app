@@ -25,10 +25,10 @@ interface LayoutProps {
 
 const navItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
-  { text: "Ingredients", icon: <RestaurantIcon />, path: "/ingredients" },
-  { text: "Add Ingredient", icon: <AddCircleIcon />, path: "/ingredients/new" },
-  { text: "Meals", icon: <MenuBookIcon />, path: "/meals" },
-  { text: "Add Meal", icon: <AddBoxIcon />, path: "/meals/new" },
+  { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
+  { text: "Dodaj składnik", icon: <AddCircleIcon />, path: "/ingredients/new" },
+  { text: "Przepisy", icon: <MenuBookIcon />, path: "/meals" },
+  { text: "Dodaj przepis", icon: <AddBoxIcon />, path: "/meals/new" },
 ];
 
 export function Layout({ children }: LayoutProps) {
@@ -99,7 +99,7 @@ export function Layout({ children }: LayoutProps) {
       >
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 0, mr: 3 }}>
-            🍳 Recipe App
+            🌟 dabelo.pl
           </Typography>
 
           {isMobile ? (
@@ -165,7 +165,7 @@ export function Layout({ children }: LayoutProps) {
       >
         <Container maxWidth="sm">
           <Typography variant="body2" color="text.secondary" align="center">
-            {"Copyright © Recipe App "}
+            {"Copyright © dabelo.pl "}
             {new Date().getFullYear()}
             {" 🍽️ Made with ❤️ for food lovers"}
           </Typography>

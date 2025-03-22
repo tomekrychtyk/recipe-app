@@ -54,7 +54,7 @@ export function EditIngredientModal({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <form onSubmit={handleSubmit}>
-        <DialogTitle>Edit Ingredient</DialogTitle>
+        <DialogTitle>Edytuj składnik</DialogTitle>
         <DialogContent>
           {error && error.length > 0 && (
             <Alert severity="error" sx={{ mb: 2 }}>
@@ -66,7 +66,7 @@ export function EditIngredientModal({
 
           <TextField
             fullWidth
-            label="Name"
+            label="Nazwa"
             name="name"
             value={formData.name}
             onChange={handleChange}
@@ -78,7 +78,7 @@ export function EditIngredientModal({
           <TextField
             select
             fullWidth
-            label="Category"
+            label="Kategoria"
             name="categoryId"
             value={formData.categoryId}
             onChange={handleChange}
@@ -104,7 +104,7 @@ export function EditIngredientModal({
             <TextField
               required
               type="number"
-              label="Proteins"
+              label="Białko (g)"
               name="proteins"
               value={formData.proteins}
               onChange={handleChange}
@@ -117,7 +117,7 @@ export function EditIngredientModal({
             <TextField
               required
               type="number"
-              label="Carbs"
+              label="Węglowodany (g)"
               name="carbs"
               value={formData.carbs}
               onChange={handleChange}
@@ -130,7 +130,7 @@ export function EditIngredientModal({
             <TextField
               required
               type="number"
-              label="Fats"
+              label="Tłuszcze (g)"
               name="fats"
               value={formData.fats}
               onChange={handleChange}
@@ -143,7 +143,7 @@ export function EditIngredientModal({
             <TextField
               required
               type="number"
-              label="Calories"
+              label="Kalorie (kcal)"
               name="calories"
               value={formData.calories}
               onChange={handleChange}
@@ -158,10 +158,10 @@ export function EditIngredientModal({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} disabled={isLoading}>
-            Cancel
+            Anuluj
           </Button>
           <Button type="submit" variant="contained" disabled={isLoading}>
-            {isLoading ? <CircularProgress size={24} /> : "Save Changes"}
+            {isLoading ? <CircularProgress size={24} /> : "Zapisz zmiany"}
           </Button>
         </DialogActions>
       </form>

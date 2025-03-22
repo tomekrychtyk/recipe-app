@@ -101,33 +101,23 @@ export function AddMeal() {
     <Box sx={{ maxWidth: 800, mx: "auto", mt: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          🍳 Create New Meal
+          🍳 Skomponuj przepis
         </Typography>
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            Failed to create meal
+            Nie udało się stworzyć przepisu
           </Alert>
         )}
 
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Meal Name"
+            label="Nazwa przepisu"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
             sx={{ mb: 2 }}
-          />
-
-          <TextField
-            fullWidth
-            label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            multiline
-            rows={2}
-            sx={{ mb: 3 }}
           />
 
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
@@ -137,12 +127,12 @@ export function AddMeal() {
               options={ingredients}
               getOptionLabel={(option) => option.name}
               renderInput={(params) => (
-                <TextField {...params} label="Select Ingredient" />
+                <TextField {...params} label="Wybierz składnik" />
               )}
               sx={{ flexGrow: 1 }}
             />
             <TextField
-              label="Amount (g)"
+              label="Ilość (g)"
               type="number"
               value={currentAmount}
               onChange={(e) => setCurrentAmount(e.target.value)}
@@ -162,13 +152,13 @@ export function AddMeal() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Ingredient</TableCell>
-                    <TableCell align="right">Amount (g)</TableCell>
-                    <TableCell align="right">Proteins (g)</TableCell>
-                    <TableCell align="right">Carbs (g)</TableCell>
-                    <TableCell align="right">Fats (g)</TableCell>
-                    <TableCell align="right">Calories (kcal)</TableCell>
-                    <TableCell align="right">Actions</TableCell>
+                    <TableCell>Składnik</TableCell>
+                    <TableCell align="right">Ilość (g)</TableCell>
+                    <TableCell align="right">Białko (g)</TableCell>
+                    <TableCell align="right">Węglowodany (g)</TableCell>
+                    <TableCell align="right">Tłuszcze (g)</TableCell>
+                    <TableCell align="right">Kalorie (kcal)</TableCell>
+                    <TableCell align="right">Akcje</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -224,15 +214,23 @@ export function AddMeal() {
               </Table>
             </TableContainer>
           )}
-
+          <TextField
+            fullWidth
+            label="Opis przepisu"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            multiline
+            rows={2}
+            sx={{ mb: 3 }}
+          />
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-            <Button onClick={() => navigate("/meals")}>Cancel</Button>
+            <Button onClick={() => navigate("/meals")}>Anuluj</Button>
             <Button
               type="submit"
               variant="contained"
               disabled={isLoading || !name || selectedIngredients.length === 0}
             >
-              {isLoading ? <CircularProgress size={24} /> : "Create Meal"}
+              {isLoading ? <CircularProgress size={24} /> : "Zapisz przepis"}
             </Button>
           </Box>
         </form>

@@ -69,7 +69,7 @@ export function Meals() {
           color="primary"
           onClick={() => navigate("/meals/new")}
         >
-          Add New Meal
+          Dodaj przepis
         </Button>
       </Box>
 
@@ -77,12 +77,12 @@ export function Meals() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell align="right">Proteins (g)</TableCell>
-              <TableCell align="right">Carbs (g)</TableCell>
-              <TableCell align="right">Fats (g)</TableCell>
-              <TableCell align="right">Calories (kcal)</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              <TableCell>Nazwa</TableCell>
+              <TableCell align="right">Białko (g)</TableCell>
+              <TableCell align="right">Węglowodany (g)</TableCell>
+              <TableCell align="right">Tłuszcze (g)</TableCell>
+              <TableCell align="right">Kalorie (kcal)</TableCell>
+              <TableCell align="right">Akcje</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

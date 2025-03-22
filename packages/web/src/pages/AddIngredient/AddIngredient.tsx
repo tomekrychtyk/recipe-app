@@ -135,13 +135,13 @@ export function AddIngredient() {
     <Box sx={{ maxWidth: 800, mx: "auto", mt: 4 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          🥗 Add New Ingredient
+          🥗 Dodaj nowy składnik
         </Typography>
 
         {success && (
           <Fade in={success}>
             <Alert severity="success" sx={{ mb: 2 }}>
-              Ingredient added successfully!
+              Składnik dodany pomyślnie!
             </Alert>
           </Fade>
         )}
@@ -157,7 +157,7 @@ export function AddIngredient() {
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Name"
+            label="Nazwa"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -167,7 +167,7 @@ export function AddIngredient() {
           <TextField
             select
             fullWidth
-            label="Category"
+            label="Kategoria"
             value={category}
             onChange={(e) => setCategory(e.target.value as FoodCategory)}
             required
@@ -181,12 +181,12 @@ export function AddIngredient() {
           </TextField>
 
           <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
-            Macronutrients (per 100g)
+            Makroskładniki (na 100g)
           </Typography>
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
             <TextField
               type="number"
-              label="Proteins (g)"
+              label="Białko (g)"
               value={nutrients.proteins}
               onChange={(e) =>
                 handleNutrientChange(
@@ -200,7 +200,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Carbs (g)"
+              label="Węglowodany (g)"
               value={nutrients.carbs}
               onChange={(e) =>
                 handleNutrientChange(
@@ -214,7 +214,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Fats (g)"
+              label="Tłuszcze (g)"
               value={nutrients.fats}
               onChange={(e) =>
                 handleNutrientChange(
@@ -228,7 +228,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Calories (kcal)"
+              label="Kalorie (kcal)"
               value={nutrients.calories}
               onChange={(e) =>
                 handleNutrientChange(
@@ -245,7 +245,7 @@ export function AddIngredient() {
           <Divider sx={{ my: 4 }} />
 
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Vitamins (per 100g)
+            Witaminy (na 100g)
           </Typography>
           <Box
             sx={{
@@ -257,7 +257,7 @@ export function AddIngredient() {
           >
             <TextField
               type="number"
-              label="Vitamin A (mcg)"
+              label="Witamina A (mcg)"
               value={nutrients.vitaminA ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminA", e.target.value)
@@ -265,7 +265,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Vitamin D (mcg)"
+              label="Witamina D (mcg)"
               value={nutrients.vitaminD ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminD", e.target.value)
@@ -273,7 +273,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Vitamin E (mg)"
+              label="Witamina E (mg)"
               value={nutrients.vitaminE ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminE", e.target.value)
@@ -281,7 +281,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Vitamin K (mcg)"
+              label="Witamina K (mcg)"
               value={nutrients.vitaminK ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminK", e.target.value)
@@ -289,7 +289,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Vitamin C (mg)"
+              label="Witamina C (mg)"
               value={nutrients.vitaminC ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminC", e.target.value)
@@ -297,7 +297,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Thiamin (B1) (mg)"
+              label="Tiamina (B1) (mg)"
               value={nutrients.thiamin ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "thiamin", e.target.value)
@@ -305,7 +305,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Riboflavin (B2) (mg)"
+              label="Ryboflawina (B2) (mg)"
               value={nutrients.riboflavin ?? ""}
               onChange={(e) =>
                 handleNutrientChange(
@@ -317,7 +317,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Niacin (B3) (mg)"
+              label="Niacyna (B3) (mg)"
               value={nutrients.niacin ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "niacin", e.target.value)
@@ -325,7 +325,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Pantothenic Acid (B5) (mg)"
+              label="Kwas pantotenowy (B5) (mg)"
               value={nutrients.pantothenicAcid ?? ""}
               onChange={(e) =>
                 handleNutrientChange(
@@ -337,7 +337,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Vitamin B6 (mg)"
+              label="Witamina B6 (mg)"
               value={nutrients.vitaminB6 ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminB6", e.target.value)
@@ -345,7 +345,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Biotin (B7) (mcg)"
+              label="Biotyna (B7) (mcg)"
               value={nutrients.biotin ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "biotin", e.target.value)
@@ -353,7 +353,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Folate (B9) (mcg)"
+              label="Folian (B9) (mcg)"
               value={nutrients.folate ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "folate", e.target.value)
@@ -361,7 +361,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Vitamin B12 (mcg)"
+              label="Witamina B12 (mcg)"
               value={nutrients.vitaminB12 ?? ""}
               onChange={(e) =>
                 handleNutrientChange(
@@ -376,7 +376,7 @@ export function AddIngredient() {
           <Divider sx={{ my: 4 }} />
 
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Minerals (per 100g)
+            Minerały (na 100g)
           </Typography>
           <Box
             sx={{
@@ -388,7 +388,7 @@ export function AddIngredient() {
           >
             <TextField
               type="number"
-              label="Calcium (mg)"
+              label="Wapń (mg)"
               value={nutrients.calcium ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "calcium", e.target.value)
@@ -396,7 +396,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Iron (mg)"
+              label="Żelazo (mg)"
               value={nutrients.iron ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "iron", e.target.value)
@@ -404,7 +404,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Magnesium (mg)"
+              label="Magnez (mg)"
               value={nutrients.magnesium ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "magnesium", e.target.value)
@@ -412,7 +412,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Phosphorus (mg)"
+              label="Fosfor (mg)"
               value={nutrients.phosphorus ?? ""}
               onChange={(e) =>
                 handleNutrientChange(
@@ -424,7 +424,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Potassium (mg)"
+              label="Potas (mg)"
               value={nutrients.potassium ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "potassium", e.target.value)
@@ -432,7 +432,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Sodium (mg)"
+              label="Sód (mg)"
               value={nutrients.sodium ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "sodium", e.target.value)
@@ -440,7 +440,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Zinc (mg)"
+              label="Cynk (mg)"
               value={nutrients.zinc ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "zinc", e.target.value)
@@ -448,7 +448,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Copper (mg)"
+              label="Miedź (mg)"
               value={nutrients.copper ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "copper", e.target.value)
@@ -456,7 +456,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Manganese (mg)"
+              label="Mangan (mg)"
               value={nutrients.manganese ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "manganese", e.target.value)
@@ -464,7 +464,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Selenium (mcg)"
+              label="Selen (mcg)"
               value={nutrients.selenium ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "selenium", e.target.value)
@@ -472,7 +472,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Chromium (mcg)"
+              label="Chrom (mcg)"
               value={nutrients.chromium ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "chromium", e.target.value)
@@ -480,7 +480,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Molybdenum (mcg)"
+              label="Molibden (mcg)"
               value={nutrients.molybdenum ?? ""}
               onChange={(e) =>
                 handleNutrientChange(
@@ -492,7 +492,7 @@ export function AddIngredient() {
             />
             <TextField
               type="number"
-              label="Iodine (mcg)"
+              label="Jod (mcg)"
               value={nutrients.iodine ?? ""}
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "iodine", e.target.value)
@@ -501,9 +501,9 @@ export function AddIngredient() {
           </Box>
 
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-            <Button onClick={() => navigate("/ingredients")}>Cancel</Button>
+            <Button onClick={() => navigate("/ingredients")}>Anuluj</Button>
             <Button type="submit" variant="contained" disabled={isLoading}>
-              {isLoading ? <CircularProgress size={24} /> : "Add Ingredient"}
+              {isLoading ? <CircularProgress size={24} /> : "Dodaj składnik"}
             </Button>
           </Box>
         </form>
