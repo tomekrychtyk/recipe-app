@@ -59,13 +59,46 @@ export interface Meal {
   id: number;
   name: string;
   description?: string;
-  ingredients: MealIngredient[];
   totalNutrients: {
+    // Basic nutrients
     proteins: number;
     carbs: number;
     fats: number;
     calories: number;
+
+    // Vitamins
+    vitaminA: number;
+    vitaminD: number;
+    vitaminE: number;
+    vitaminK: number;
+    vitaminC: number;
+    thiamin: number;
+    riboflavin: number;
+    niacin: number;
+    pantothenicAcid: number;
+    vitaminB6: number;
+    biotin: number;
+    folate: number;
+    vitaminB12: number;
+
+    // Minerals
+    calcium: number;
+    iron: number;
+    magnesium: number;
+    phosphorus: number;
+    potassium: number;
+    sodium: number;
+    zinc: number;
+    copper: number;
+    manganese: number;
+    selenium: number;
+    chromium: number;
+    molybdenum: number;
+    iodine: number;
   };
+  ingredients: MealIngredient[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MealInput {
