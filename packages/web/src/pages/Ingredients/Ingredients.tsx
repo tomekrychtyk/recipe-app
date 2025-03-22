@@ -291,7 +291,7 @@ export function Ingredients() {
         </Typography>
         <Button
           component={Link}
-          to="/ingredients/add"
+          to="/ingredients/new"
           variant="contained"
           color="primary"
         >

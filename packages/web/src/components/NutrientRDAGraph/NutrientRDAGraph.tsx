@@ -4,6 +4,7 @@ import {
   MINERALS_RDA,
 } from "@food-recipe-app/common/src/constants/rda";
 import type { Meal } from "@food-recipe-app/common";
+import { HorizontalGraph } from "../HorizontalGraph";
 
 interface Props {
   totalNutrients: Meal["totalNutrients"];
@@ -54,23 +55,7 @@ export function NutrientRDAGraph({ totalNutrients }: Props) {
                       position: "relative",
                     }}
                   >
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        left: 0,
-                        width: `${percentage}%`,
-                        height: "100%",
-                        bgcolor:
-                          percentage > 90
-                            ? "success.main"
-                            : percentage > 50
-                              ? "info.main"
-                              : percentage > 25
-                                ? "warning.main"
-                                : "error.main",
-                        transition: "width 0.5s",
-                      }}
-                    />
+                    <HorizontalGraph percentage={percentage} />
                   </Box>
                 </Box>
               </Tooltip>

@@ -26,7 +26,6 @@ export function App() {
                   <Route path="/meals/new" element={<AddMeal />} />
                   <Route path="/meals/:id/edit" element={<EditMeal />} />
                   <Route path="/meals/:id" element={<MealDetails />} />
-                  {/* Other routes will go here */}
                 </Routes>
               </Box>
             </Layout>
