@@ -22,6 +22,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useGetMealsQuery, useDeleteMealMutation } from "../../store/api/meals";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { getMealCategoryName } from "@/utils/meals";
 
 export function Meals() {
   const { data: meals = [], isLoading, error } = useGetMealsQuery();
@@ -90,6 +91,7 @@ export function Meals() {
             <TableRow>
               <TableCell>Nazwa</TableCell>
               <TableCell align="right">Białko (g)</TableCell>
+              <TableCell align="right">Kategoria</TableCell>
               <TableCell align="right">Węglowodany (g)</TableCell>
               <TableCell align="right">Tłuszcze (g)</TableCell>
               <TableCell align="right">Kalorie (kcal)</TableCell>
@@ -114,6 +116,9 @@ export function Meals() {
                 </TableCell>
                 <TableCell align="right">
                   {formatNutrient(meal.totalNutrients.proteins)}
+                </TableCell>
+                <TableCell align="right">
+                  {getMealCategoryName(meal.categoryId)}
                 </TableCell>
                 <TableCell align="right">
                   {formatNutrient(meal.totalNutrients.carbs)}

@@ -55,6 +55,7 @@ model Ingredient {
 model Meal {
   id          Int              @id @default(autoincrement())
   name        String
+  categoryId  String
   description String?
   ingredients MealIngredient[]
   createdAt   DateTime         @default(now())

@@ -1,4 +1,4 @@
-import type { FoodCategory } from "./constants/categories";
+import type { FoodCategory, MealCategory } from "./constants/categories";
 
 export interface Ingredient {
   id: number;
@@ -58,6 +58,7 @@ export interface MealIngredient extends MealIngredientInput {
 export interface Meal {
   id: number;
   name: string;
+  categoryId: MealCategory;
   description?: string;
   totalNutrients: {
     // Basic nutrients

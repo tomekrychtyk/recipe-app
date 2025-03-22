@@ -16,3 +16,11 @@ export const FOOD_CATEGORIES = [
 ] as const;
 
 export type FoodCategory = (typeof FOOD_CATEGORIES)[number]["id"];
+
+export const MEAL_CATEGORIES = [
+  { name: "Śniadanie", id: "breakfast" },
+  { name: "Obiad", id: "dinner" },
+  { name: "Przekąska", id: "snack" },
+] as const;
+
+export type MealCategory = (typeof MEAL_CATEGORIES)[number]["id"];

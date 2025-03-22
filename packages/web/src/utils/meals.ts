@@ -1,4 +1,7 @@
-import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
+import {
+  FOOD_CATEGORIES,
+  MEAL_CATEGORIES,
+} from "@food-recipe-app/common/src/constants/categories";
 
 export const getCategoryColor = (
   categoryId: string
@@ -26,5 +29,11 @@ export const getCategoryColor = (
 export const getCategoryName = (categoryId: string) => {
   return (
     FOOD_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
+  );
+};
+
+export const getMealCategoryName = (categoryId: string) => {
+  return (
+    MEAL_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
   );
 };
