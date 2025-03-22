@@ -278,7 +278,7 @@ export function Ingredients() {
   if (error) {
     return (
       <Alert severity="error" sx={{ mt: 4 }}>
-        Failed to load ingredients
+        Nie udało się załadować składników
       </Alert>
     );
   }
