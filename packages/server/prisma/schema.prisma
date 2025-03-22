@@ -9,16 +9,47 @@ datasource db {
 }
 
 model Ingredient {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  categoryId String
-  proteins  Float
-  carbs     Float
-  fats      Float
-  calories  Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  meals     MealIngredient[]
+  id          Int      @id @default(autoincrement())
+  name        String
+  categoryId  String
+  proteins    Float
+  carbs       Float
+  fats        Float
+  calories    Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Vitamins
+  vitaminA        Float?  // mcg
+  vitaminD        Float?  // mcg
+  vitaminE        Float?  // mg
+  vitaminK        Float?  // mcg
+  vitaminC        Float?  // mg
+  thiamin         Float?  // mg
+  riboflavin      Float?  // mg
+  niacin          Float?  // mg
+  pantothenicAcid Float?  // mg
+  vitaminB6       Float?  // mg
+  biotin          Float?  // mcg
+  folate          Float?  // mcg
+  vitaminB12      Float?  // mcg
+
+  // Minerals
+  calcium     Float?  // mg
+  iron        Float?  // mg
+  magnesium   Float?  // mg
+  phosphorus  Float?  // mg
+  potassium   Float?  // mg
+  sodium      Float?  // mg
+  zinc        Float?  // mg
+  copper      Float?  // mg
+  manganese   Float?  // mg
+  selenium    Float?  // mcg
+  chromium    Float?  // mcg
+  molybdenum  Float?  // mcg
+  iodine      Float?  // mcg
+
+  meals MealIngredient[]
 }
 
 model Meal {

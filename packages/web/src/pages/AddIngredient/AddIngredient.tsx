@@ -5,18 +5,29 @@ import {
   Typography,
   TextField,
   Button,
-  InputAdornment,
   Alert,
   Fade,
   CircularProgress,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { useAddIngredientMutation } from "../../store/api/ingredients";
-import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
+import {
+  FOOD_CATEGORIES,
+  FoodCategory,
+} from "@food-recipe-app/common/src/constants/categories";
+import { useNavigate } from "react-router-dom";
 
 export function AddIngredient() {
   const [addIngredient, { isLoading, error }] = useAddIngredientMutation();
   const [success, setSuccess] = useState(false);
+  const [name, setName] = useState("");
+  const [category, setCategory] = useState("");
+  const [proteins, setProteins] = useState(0);
+  const [carbs, setCarbs] = useState(0);
+  const [fats, setFats] = useState(0);
+  const [calories, setCalories] = useState(0);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,7 +36,7 @@ export function AddIngredient() {
     try {
       await addIngredient({
         name: formData.get("name") as string,
-        categoryId: formData.get("categoryId") as string,
+        categoryId: formData.get("categoryId") as FoodCategory,
         proteins: Number(formData.get("proteins")),
         carbs: Number(formData.get("carbs")),
         fats: Number(formData.get("fats")),
@@ -47,23 +58,9 @@ export function AddIngredient() {
     : [];
 
   return (
-    <Box
-      sx={{
-        maxWidth: 600,
-        mx: "auto",
-        mt: 4,
-      }}
-    >
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          borderRadius: 2,
-          border: "1px solid",
-          borderColor: "primary.main",
-        }}
-      >
-        <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
+    <Box sx={{ maxWidth: 800, mx: "auto", mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
           🥗 Add New Ingredient
         </Typography>
 
@@ -85,109 +82,130 @@ export function AddIngredient() {
 
         <form onSubmit={handleSubmit}>
           <TextField
-            required
             fullWidth
-            label="Ingredient Name"
-            name="name"
-            margin="normal"
-            variant="outlined"
-            disabled={isLoading}
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            sx={{ mb: 2 }}
           />
 
           <TextField
-            required
             select
             fullWidth
             label="Category"
-            name="categoryId"
-            margin="normal"
-            variant="outlined"
-            disabled={isLoading}
-            defaultValue=""
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            sx={{ mb: 2 }}
           >
-            {FOOD_CATEGORIES.map((category) => (
-              <MenuItem key={category.id} value={category.id}>
-                {category.name}
+            {FOOD_CATEGORIES.map((cat) => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
               </MenuItem>
             ))}
           </TextField>
 
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-              gap: 2,
-              my: 2,
-            }}
-          >
+          <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
+            Macronutrients (per 100g)
+          </Typography>
+          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
             <TextField
-              required
               type="number"
-              label="Proteins"
-              name="proteins"
-              disabled={isLoading}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              }}
+              label="Proteins (g)"
+              value={proteins}
+              onChange={(e) => setProteins(Number(e.target.value))}
+              required
+              fullWidth
             />
-
             <TextField
-              required
               type="number"
-              label="Carbs"
-              name="carbs"
-              disabled={isLoading}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              }}
+              label="Carbs (g)"
+              value={carbs}
+              onChange={(e) => setCarbs(Number(e.target.value))}
+              required
+              fullWidth
             />
-
             <TextField
-              required
               type="number"
-              label="Fats"
-              name="fats"
-              disabled={isLoading}
-              InputProps={{
-                endAdornment: <InputAdornment position="end">g</InputAdornment>,
-              }}
+              label="Fats (g)"
+              value={fats}
+              onChange={(e) => setFats(Number(e.target.value))}
+              required
+              fullWidth
             />
-
             <TextField
-              required
               type="number"
-              label="Calories"
-              name="calories"
-              disabled={isLoading}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">kcal</InputAdornment>
-                ),
-              }}
+              label="Calories (kcal)"
+              value={calories}
+              onChange={(e) => setCalories(Number(e.target.value))}
+              required
+              fullWidth
             />
           </Box>
 
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            fullWidth
-            disabled={isLoading}
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Vitamins (per 100g)
+          </Typography>
+          <Box
             sx={{
-              mt: 3,
-              height: 48,
-              background: "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
-              "&:hover": {
-                background: "linear-gradient(45deg, #FFA500 30%, #FFD700 90%)",
-              },
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2,
+              mb: 4,
             }}
           >
-            {isLoading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Add Ingredient"
-            )}
-          </Button>
+            <TextField type="number" label="Vitamin A (mcg)" />
+            <TextField type="number" label="Vitamin D (mcg)" />
+            <TextField type="number" label="Vitamin E (mg)" />
+            <TextField type="number" label="Vitamin K (mcg)" />
+            <TextField type="number" label="Vitamin C (mg)" />
+            <TextField type="number" label="Thiamin (B1) (mg)" />
+            <TextField type="number" label="Riboflavin (B2) (mg)" />
+            <TextField type="number" label="Niacin (B3) (mg)" />
+            <TextField type="number" label="Pantothenic Acid (B5) (mg)" />
+            <TextField type="number" label="Vitamin B6 (mg)" />
+            <TextField type="number" label="Biotin (B7) (mcg)" />
+            <TextField type="number" label="Folate (B9) (mcg)" />
+            <TextField type="number" label="Vitamin B12 (mcg)" />
+          </Box>
+
+          <Divider sx={{ my: 4 }} />
+
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Minerals (per 100g)
+          </Typography>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2,
+              mb: 4,
+            }}
+          >
+            <TextField type="number" label="Calcium (mg)" />
+            <TextField type="number" label="Iron (mg)" />
+            <TextField type="number" label="Magnesium (mg)" />
+            <TextField type="number" label="Phosphorus (mg)" />
+            <TextField type="number" label="Potassium (mg)" />
+            <TextField type="number" label="Sodium (mg)" />
+            <TextField type="number" label="Zinc (mg)" />
+            <TextField type="number" label="Copper (mg)" />
+            <TextField type="number" label="Manganese (mg)" />
+            <TextField type="number" label="Selenium (mcg)" />
+            <TextField type="number" label="Chromium (mcg)" />
+            <TextField type="number" label="Molybdenum (mcg)" />
+            <TextField type="number" label="Iodine (mcg)" />
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
+            <Button onClick={() => navigate("/ingredients")}>Cancel</Button>
+            <Button type="submit" variant="contained" disabled={isLoading}>
+              {isLoading ? <CircularProgress size={24} /> : "Add Ingredient"}
+            </Button>
+          </Box>
         </form>
       </Paper>
     </Box>
