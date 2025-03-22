@@ -3,7 +3,7 @@ import { theme } from "./theme";
 import { Layout } from "./components/Layout";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HomePage } from "./pages/Home";
-import { AddIngredient } from "./pages/AddIngredient";
+import { AddIngredient } from "./pages/Ingredients/AddIngredient";
 import { Ingredients } from "./pages/Ingredients";
 import { Provider } from "react-redux";
 import { store } from "./store";

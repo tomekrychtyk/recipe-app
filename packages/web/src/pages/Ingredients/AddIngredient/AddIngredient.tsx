@@ -11,7 +11,7 @@ import {
   MenuItem,
   Divider,
 } from "@mui/material";
-import { useAddIngredientMutation } from "../../store/api/ingredients";
+import { useAddIngredientMutation } from "../../../store/api/ingredients";
 import {
   FOOD_CATEGORIES,
   FoodCategory,
