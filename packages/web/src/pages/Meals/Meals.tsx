@@ -12,24 +12,35 @@ import {
   Alert,
   IconButton,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useGetMealsQuery, useDeleteMealMutation } from "../../store/api/meals";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export function Meals() {
   const { data: meals = [], isLoading, error } = useGetMealsQuery();
   const [deleteMeal, { isLoading: isDeleting }] = useDeleteMealMutation();
   const navigate = useNavigate();
+  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
-  const handleDeleteClick = async (id: number) => {
-    if (window.confirm("Are you sure you want to delete this meal?")) {
+  const handleDeleteClick = (id: number) => {
+    setDeleteConfirmId(id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteConfirmId) {
       try {
-        await deleteMeal(id).unwrap();
+        await deleteMeal(deleteConfirmId).unwrap();
       } catch (error) {
         console.error("Failed to delete meal:", error);
       }
+      setDeleteConfirmId(null);
     }
   };
 
@@ -141,6 +152,24 @@ export function Meals() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog
+        open={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+      >
+        <DialogTitle>Potwierdzenie usunięcia</DialogTitle>
+        <DialogContent>Czy na pewno chcesz usunąć ten posiłek?</DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteConfirmId(null)}>Anuluj</Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+          >
+            Usuń
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
