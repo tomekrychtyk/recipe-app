@@ -1,25 +1,25 @@
 export const VITAMINS_RDA = {
-  vitA: {
+  vitaminA: {
     unit: "mcg",
     value: 900,
     label: "Vitamin A",
   },
-  vitD: {
+  vitaminD: {
     unit: "mcg",
     value: 15,
     label: "Vitamin D",
   },
-  vitE: {
+  vitaminE: {
     unit: "mg",
     value: 15,
     label: "Vitamin E",
   },
-  vitK: {
+  vitaminK: {
     unit: "mcg",
     value: 120,
     label: "Vitamin K",
   },
-  thiamine: {
+  thiamin: {
     unit: "mg",
     value: 1.5,
     label: "Thiamine",
@@ -106,5 +106,20 @@ export const MINERALS_RDA = {
     unit: "mcg",
     value: 55,
     label: "Selenium",
+  },
+  chromium: {
+    unit: "mcg",
+    value: 35,
+    label: "Chromium",
+  },
+  molybdenum: {
+    unit: "mcg",
+    value: 45,
+    label: "Molybdenum",
+  },
+  iodine: {
+    unit: "mcg",
+    value: 150,
+    label: "Iodine",
   },
 };

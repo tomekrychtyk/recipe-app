@@ -16,6 +16,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetMealByIdQuery } from "../../store/api/meals";
+import { NutrientRDAGraph } from "../../components/NutrientRDAGraph";
 
 export function MealDetails() {
   const { id } = useParams<{ id: string }>();
@@ -156,6 +157,9 @@ export function MealDetails() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box sx={{ p: 3 }}>
+        <NutrientRDAGraph totalNutrients={meal.totalNutrients} />
+      </Box>
     </Box>
   );
 }
