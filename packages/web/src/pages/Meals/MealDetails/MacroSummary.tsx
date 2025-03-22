@@ -3,7 +3,18 @@ import { Box, Paper, Typography } from "@mui/material";
 
 export const MacroSummary = ({ meal }: { meal: Meal }) => (
   <Paper sx={{ mb: 4 }}>
-    <Box sx={{ p: 2, display: "flex", gap: 2, justifyContent: "space-around" }}>
+    <Box
+      sx={{
+        p: 2,
+        display: "flex",
+        gap: 2,
+        justifyContent: "space-around",
+        flexWrap: {
+          xs: "wrap",
+          md: "nowrap",
+        },
+      }}
+    >
       <Box sx={{ textAlign: "center" }}>
         <Typography variant="h6">
           {meal.totalNutrients.proteins.toFixed(1)}g

@@ -28,7 +28,7 @@ export function MealDetails() {
   if (error || !meal) {
     return (
       <Alert severity="error" sx={{ mt: 4 }}>
-        Failed to load meal details
+        Nie udało się załadować posiłku
       </Alert>
     );
   }
