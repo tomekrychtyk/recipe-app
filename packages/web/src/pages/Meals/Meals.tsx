@@ -57,7 +57,7 @@ export function Meals() {
   if (error) {
     return (
       <Alert severity="error" sx={{ mt: 4 }}>
-        Failed to load meals
+        Nie udało się załadować posiłków
       </Alert>
     );
   }
@@ -73,7 +73,7 @@ export function Meals() {
         }}
       >
         <Typography variant="h4" component="h1">
-          🍽️ Meals
+          🍽️ Przepisy
         </Typography>
         <Button
           variant="contained"

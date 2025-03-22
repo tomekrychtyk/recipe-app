@@ -1,35 +1,21 @@
 import {
   Box,
-  Paper,
   Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   CircularProgress,
   Alert,
   Button,
-  Chip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetMealByIdQuery } from "../../../store/api/meals";
 import { NutrientRDAGraph } from "../../../components/NutrientRDAGraph";
-import { getCategoryColor } from "../../../utils";
+import { MacroSummary } from "./MacroSummary";
+import { MealIngredients } from "./MealIngredients";
 
 export function MealDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: meal, isLoading, error } = useGetMealByIdQuery(parseInt(id!));
-
-  const getCategoryName = (categoryId: string) => {
-    return (
-      FOOD_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
-    );
-  };
 
   if (isLoading) {
     return (
@@ -76,96 +62,14 @@ export function MealDetails() {
         </Button>
       </Box>
 
-      <Paper sx={{ mb: 4 }}>
-        <Box
-          sx={{ p: 2, display: "flex", gap: 2, justifyContent: "space-around" }}
-        >
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h6">
-              {meal.totalNutrients.proteins.toFixed(1)}g
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Proteins
-            </Typography>
-          </Box>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h6">
-              {meal.totalNutrients.carbs.toFixed(1)}g
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Carbs
-            </Typography>
-          </Box>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h6">
-              {meal.totalNutrients.fats.toFixed(1)}g
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Fats
-            </Typography>
-          </Box>
-          <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h6">
-              {meal.totalNutrients.calories.toFixed(1)} kcal
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Calories
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
+      <MacroSummary meal={meal} />
 
       <Typography variant="h5" component="h2" gutterBottom>
         Składniki
       </Typography>
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Składnik</TableCell>
-              <TableCell align="right">Ilość (g)</TableCell>
-              <TableCell align="right">Białko (g)</TableCell>
-              <TableCell align="right">Węglowodany (g)</TableCell>
-              <TableCell align="right">Tłuszcze (g)</TableCell>
-              <TableCell align="right">Kalorie (kcal)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {meal.ingredients.map(({ ingredient, amount }) => {
-              const multiplier = amount / 100;
-              return (
-                <TableRow key={ingredient.id}>
-                  <TableCell>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      {ingredient.name}
-                      <Chip
-                        label={getCategoryName(ingredient.categoryId)}
-                        color={getCategoryColor(ingredient.categoryId)}
-                        size="small"
-                        variant="outlined"
-                      />
-                    </Box>
-                  </TableCell>
-                  <TableCell align="right">{amount}</TableCell>
-                  <TableCell align="right">
-                    {(ingredient.proteins * multiplier).toFixed(1)}
-                  </TableCell>
-                  <TableCell align="right">
-                    {(ingredient.carbs * multiplier).toFixed(1)}
-                  </TableCell>
-                  <TableCell align="right">
-                    {(ingredient.fats * multiplier).toFixed(1)}
-                  </TableCell>
-                  <TableCell align="right">
-                    {(ingredient.calories * multiplier).toFixed(1)}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <MealIngredients meal={meal} />
+
       <Box sx={{ p: 3 }}>
         <NutrientRDAGraph totalNutrients={meal.totalNutrients} />
       </Box>

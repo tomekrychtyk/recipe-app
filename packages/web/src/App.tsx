@@ -7,10 +7,7 @@ import { AddIngredient } from "./pages/AddIngredient";
 import { Ingredients } from "./pages/Ingredients";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { Meals } from "./pages/Meals";
-import { AddMeal } from "./pages/Meals/AddMeal";
-import { EditMeal } from "./pages/Meals/EditMeal";
-import { MealDetails } from "./pages/Meals/MealDetails";
+import { Meals, AddMeal, EditMeal, MealDetails } from "./pages/Meals";
 
 export function App() {
   return (

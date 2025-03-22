@@ -1,3 +1,5 @@
+import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
+
 export const getCategoryColor = (
   categoryId: string
 ):
@@ -19,4 +21,10 @@ export const getCategoryColor = (
     "nuts-seeds": "success",
   };
   return colors[categoryId] || "default";
+};
+
+export const getCategoryName = (categoryId: string) => {
+  return (
+    FOOD_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
+  );
 };
