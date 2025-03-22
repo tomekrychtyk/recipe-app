@@ -1,4 +1,4 @@
-import type { Ingredient } from "@food-recipe-app/common";
+import type { Ingredient, NutrientsState } from "@food-recipe-app/common";
 import { baseApi } from "./base";
 
 export const ingredientsApi = baseApi.injectEndpoints({
@@ -7,7 +7,13 @@ export const ingredientsApi = baseApi.injectEndpoints({
       query: () => "/ingredients",
       providesTags: ["Ingredient"],
     }),
-    addIngredient: builder.mutation<Ingredient, Omit<Ingredient, "id">>({
+    addIngredient: builder.mutation<
+      Ingredient,
+      {
+        name: string;
+        categoryId: string;
+      } & NutrientsState
+    >({
       query: (ingredient) => ({
         url: "/ingredients",
         method: "POST",

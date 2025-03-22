@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import {
   Box,
   Paper,
@@ -17,34 +17,83 @@ import {
   FoodCategory,
 } from "@food-recipe-app/common/src/constants/categories";
 import { useNavigate } from "react-router-dom";
+import {
+  NutrientsState,
+  NutrientsAction,
+} from "@food-recipe-app/common/src/types";
+
+const initialState: NutrientsState = {
+  proteins: 0,
+  carbs: 0,
+  fats: 0,
+  calories: 0,
+  vitaminA: null,
+  vitaminD: null,
+  vitaminE: null,
+  vitaminK: null,
+  vitaminC: null,
+  thiamin: null,
+  riboflavin: null,
+  niacin: null,
+  pantothenicAcid: null,
+  vitaminB6: null,
+  biotin: null,
+  folate: null,
+  vitaminB12: null,
+  calcium: null,
+  iron: null,
+  magnesium: null,
+  phosphorus: null,
+  potassium: null,
+  sodium: null,
+  zinc: null,
+  copper: null,
+  manganese: null,
+  selenium: null,
+  chromium: null,
+  molybdenum: null,
+  iodine: null,
+};
+
+function nutrientsReducer(
+  state: NutrientsState,
+  action: NutrientsAction
+): NutrientsState {
+  switch (action.type) {
+    case "SET_BASIC_NUTRIENT":
+      return { ...state, [action.field]: action.value };
+    case "SET_VITAMIN":
+      return { ...state, [action.field]: action.value };
+    case "SET_MINERAL":
+      return { ...state, [action.field]: action.value };
+    case "RESET":
+      return initialState;
+    default:
+      return state;
+  }
+}
 
 export function AddIngredient() {
   const [addIngredient, { isLoading, error }] = useAddIngredientMutation();
   const [success, setSuccess] = useState(false);
   const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [proteins, setProteins] = useState(0);
-  const [carbs, setCarbs] = useState(0);
-  const [fats, setFats] = useState(0);
-  const [calories, setCalories] = useState(0);
+  const [category, setCategory] = useState<FoodCategory>(FOOD_CATEGORIES[0].id);
+  const [nutrients, dispatch] = useReducer(nutrientsReducer, initialState);
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-
     try {
       await addIngredient({
-        name: formData.get("name") as string,
-        categoryId: formData.get("categoryId") as FoodCategory,
-        proteins: Number(formData.get("proteins")),
-        carbs: Number(formData.get("carbs")),
-        fats: Number(formData.get("fats")),
-        calories: Number(formData.get("calories")),
+        name,
+        categoryId: category,
+        ...nutrients,
       }).unwrap();
 
       setSuccess(true);
-      event.currentTarget.reset();
+      setName("");
+      setCategory(FOOD_CATEGORIES[0].id);
+      dispatch({ type: "RESET" });
       setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
       console.error("Failed to add ingredient:", error);
@@ -56,6 +105,31 @@ export function AddIngredient() {
       ? (error.data as { errors?: string[] })?.errors || ["An error occurred"]
       : ["An error occurred"]
     : [];
+
+  // Helper function for handling number inputs
+  const handleNutrientChange = (
+    type: NutrientsAction["type"],
+    field: string,
+    value: string
+  ) => {
+    switch (type) {
+      case "SET_BASIC_NUTRIENT":
+        dispatch({
+          type,
+          field: field as "proteins" | "carbs" | "fats" | "calories",
+          value: Number(value),
+        });
+        break;
+      case "SET_VITAMIN":
+      case "SET_MINERAL":
+        dispatch({
+          type,
+          field: field as any,
+          value: value ? Number(value) : null,
+        });
+        break;
+    }
+  };
 
   return (
     <Box sx={{ maxWidth: 800, mx: "auto", mt: 4 }}>
@@ -95,7 +169,7 @@ export function AddIngredient() {
             fullWidth
             label="Category"
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value as FoodCategory)}
             required
             sx={{ mb: 2 }}
           >
@@ -113,32 +187,56 @@ export function AddIngredient() {
             <TextField
               type="number"
               label="Proteins (g)"
-              value={proteins}
-              onChange={(e) => setProteins(Number(e.target.value))}
+              value={nutrients.proteins}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_BASIC_NUTRIENT",
+                  "proteins",
+                  e.target.value
+                )
+              }
               required
               fullWidth
             />
             <TextField
               type="number"
               label="Carbs (g)"
-              value={carbs}
-              onChange={(e) => setCarbs(Number(e.target.value))}
+              value={nutrients.carbs}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_BASIC_NUTRIENT",
+                  "carbs",
+                  e.target.value
+                )
+              }
               required
               fullWidth
             />
             <TextField
               type="number"
               label="Fats (g)"
-              value={fats}
-              onChange={(e) => setFats(Number(e.target.value))}
+              value={nutrients.fats}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_BASIC_NUTRIENT",
+                  "fats",
+                  e.target.value
+                )
+              }
               required
               fullWidth
             />
             <TextField
               type="number"
               label="Calories (kcal)"
-              value={calories}
-              onChange={(e) => setCalories(Number(e.target.value))}
+              value={nutrients.calories}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_BASIC_NUTRIENT",
+                  "calories",
+                  e.target.value
+                )
+              }
               required
               fullWidth
             />
@@ -157,19 +255,122 @@ export function AddIngredient() {
               mb: 4,
             }}
           >
-            <TextField type="number" label="Vitamin A (mcg)" />
-            <TextField type="number" label="Vitamin D (mcg)" />
-            <TextField type="number" label="Vitamin E (mg)" />
-            <TextField type="number" label="Vitamin K (mcg)" />
-            <TextField type="number" label="Vitamin C (mg)" />
-            <TextField type="number" label="Thiamin (B1) (mg)" />
-            <TextField type="number" label="Riboflavin (B2) (mg)" />
-            <TextField type="number" label="Niacin (B3) (mg)" />
-            <TextField type="number" label="Pantothenic Acid (B5) (mg)" />
-            <TextField type="number" label="Vitamin B6 (mg)" />
-            <TextField type="number" label="Biotin (B7) (mcg)" />
-            <TextField type="number" label="Folate (B9) (mcg)" />
-            <TextField type="number" label="Vitamin B12 (mcg)" />
+            <TextField
+              type="number"
+              label="Vitamin A (mcg)"
+              value={nutrients.vitaminA ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "vitaminA", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Vitamin D (mcg)"
+              value={nutrients.vitaminD ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "vitaminD", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Vitamin E (mg)"
+              value={nutrients.vitaminE ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "vitaminE", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Vitamin K (mcg)"
+              value={nutrients.vitaminK ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "vitaminK", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Vitamin C (mg)"
+              value={nutrients.vitaminC ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "vitaminC", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Thiamin (B1) (mg)"
+              value={nutrients.thiamin ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "thiamin", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Riboflavin (B2) (mg)"
+              value={nutrients.riboflavin ?? ""}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_VITAMIN",
+                  "riboflavin",
+                  e.target.value
+                )
+              }
+            />
+            <TextField
+              type="number"
+              label="Niacin (B3) (mg)"
+              value={nutrients.niacin ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "niacin", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Pantothenic Acid (B5) (mg)"
+              value={nutrients.pantothenicAcid ?? ""}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_VITAMIN",
+                  "pantothenicAcid",
+                  e.target.value
+                )
+              }
+            />
+            <TextField
+              type="number"
+              label="Vitamin B6 (mg)"
+              value={nutrients.vitaminB6 ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "vitaminB6", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Biotin (B7) (mcg)"
+              value={nutrients.biotin ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "biotin", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Folate (B9) (mcg)"
+              value={nutrients.folate ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_VITAMIN", "folate", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Vitamin B12 (mcg)"
+              value={nutrients.vitaminB12 ?? ""}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_VITAMIN",
+                  "vitaminB12",
+                  e.target.value
+                )
+              }
+            />
           </Box>
 
           <Divider sx={{ my: 4 }} />
@@ -185,19 +386,118 @@ export function AddIngredient() {
               mb: 4,
             }}
           >
-            <TextField type="number" label="Calcium (mg)" />
-            <TextField type="number" label="Iron (mg)" />
-            <TextField type="number" label="Magnesium (mg)" />
-            <TextField type="number" label="Phosphorus (mg)" />
-            <TextField type="number" label="Potassium (mg)" />
-            <TextField type="number" label="Sodium (mg)" />
-            <TextField type="number" label="Zinc (mg)" />
-            <TextField type="number" label="Copper (mg)" />
-            <TextField type="number" label="Manganese (mg)" />
-            <TextField type="number" label="Selenium (mcg)" />
-            <TextField type="number" label="Chromium (mcg)" />
-            <TextField type="number" label="Molybdenum (mcg)" />
-            <TextField type="number" label="Iodine (mcg)" />
+            <TextField
+              type="number"
+              label="Calcium (mg)"
+              value={nutrients.calcium ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "calcium", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Iron (mg)"
+              value={nutrients.iron ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "iron", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Magnesium (mg)"
+              value={nutrients.magnesium ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "magnesium", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Phosphorus (mg)"
+              value={nutrients.phosphorus ?? ""}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_MINERAL",
+                  "phosphorus",
+                  e.target.value
+                )
+              }
+            />
+            <TextField
+              type="number"
+              label="Potassium (mg)"
+              value={nutrients.potassium ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "potassium", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Sodium (mg)"
+              value={nutrients.sodium ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "sodium", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Zinc (mg)"
+              value={nutrients.zinc ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "zinc", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Copper (mg)"
+              value={nutrients.copper ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "copper", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Manganese (mg)"
+              value={nutrients.manganese ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "manganese", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Selenium (mcg)"
+              value={nutrients.selenium ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "selenium", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Chromium (mcg)"
+              value={nutrients.chromium ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "chromium", e.target.value)
+              }
+            />
+            <TextField
+              type="number"
+              label="Molybdenum (mcg)"
+              value={nutrients.molybdenum ?? ""}
+              onChange={(e) =>
+                handleNutrientChange(
+                  "SET_MINERAL",
+                  "molybdenum",
+                  e.target.value
+                )
+              }
+            />
+            <TextField
+              type="number"
+              label="Iodine (mcg)"
+              value={nutrients.iodine ?? ""}
+              onChange={(e) =>
+                handleNutrientChange("SET_MINERAL", "iodine", e.target.value)
+              }
+            />
           </Box>
 
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>

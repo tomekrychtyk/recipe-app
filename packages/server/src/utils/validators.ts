@@ -6,33 +6,63 @@ export const validateIngredient = (
   res: Response,
   next: NextFunction
 ) => {
-  const { name, categoryId, proteins, carbs, fats, calories } = req.body;
+  const { name, categoryId, ...nutrients } = req.body;
 
   const errors: string[] = [];
 
+  // Basic validation
   if (!name || typeof name !== "string" || name.trim().length === 0) {
     errors.push("Name is required and must be a non-empty string");
   }
 
-  if (!categoryId || !FOOD_CATEGORIES.some((cat) => cat.id === categoryId)) {
-    errors.push("Valid category is required");
+  if (!categoryId || typeof categoryId !== "string") {
+    errors.push("Category ID is required and must be a string");
   }
 
-  const validateNumber = (value: any, field: string) => {
-    if (value === undefined || value === null) {
-      errors.push(`${field} is required`);
-    } else {
-      const num = Number(value);
-      if (isNaN(num) || num < 0) {
-        errors.push(`${field} must be a non-negative number`);
+  // Basic nutrients validation (required)
+  ["proteins", "carbs", "fats", "calories"].forEach((field) => {
+    if (typeof nutrients[field] !== "number" || nutrients[field] < 0) {
+      errors.push(`${field} must be a non-negative number`);
+    }
+  });
+
+  // Optional nutrients validation (vitamins and minerals)
+  const optionalNutrients = [
+    "vitaminA",
+    "vitaminD",
+    "vitaminE",
+    "vitaminK",
+    "vitaminC",
+    "thiamin",
+    "riboflavin",
+    "niacin",
+    "pantothenicAcid",
+    "vitaminB6",
+    "biotin",
+    "folate",
+    "vitaminB12",
+    "calcium",
+    "iron",
+    "magnesium",
+    "phosphorus",
+    "potassium",
+    "sodium",
+    "zinc",
+    "copper",
+    "manganese",
+    "selenium",
+    "chromium",
+    "molybdenum",
+    "iodine",
+  ];
+
+  optionalNutrients.forEach((field) => {
+    if (field in nutrients && nutrients[field] !== null) {
+      if (typeof nutrients[field] !== "number" || nutrients[field] < 0) {
+        errors.push(`${field} must be a non-negative number when provided`);
       }
     }
-  };
-
-  validateNumber(proteins, "Proteins");
-  validateNumber(carbs, "Carbs");
-  validateNumber(fats, "Fats");
-  validateNumber(calories, "Calories");
+  });
 
   if (errors.length > 0) {
     return res.status(400).json({ errors });
