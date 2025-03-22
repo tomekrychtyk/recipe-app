@@ -352,7 +352,7 @@ export function Ingredients() {
                   Kategoria
                 </TableSortLabel>
               </TableCell>
-              {["proteins", "carbs", "fats", "calories"].map((field) => (
+              {/* {["proteins", "carbs", "fats", "calories"].map((field) => (
                 <TableCell key={field} align="right">
                   <TableSortLabel
                     active={sortField === field}
@@ -363,7 +363,47 @@ export function Ingredients() {
                     {field !== "calories" ? "(g)" : "(kcal)"}
                   </TableSortLabel>
                 </TableCell>
-              ))}
+              ))} */}
+              <TableCell align="right">
+                <TableSortLabel
+                  active={sortField === "proteins"}
+                  direction={sortField === "proteins" ? sortOrder : "asc"}
+                  onClick={() => handleSort("proteins" as SortField)}
+                >
+                  Białko (g)
+                </TableSortLabel>
+              </TableCell>
+
+              <TableCell align="right">
+                <TableSortLabel
+                  active={sortField === "carbs"}
+                  direction={sortField === "carbs" ? sortOrder : "asc"}
+                  onClick={() => handleSort("carbs" as SortField)}
+                >
+                  Węglowodany (g)
+                </TableSortLabel>
+              </TableCell>
+
+              <TableCell align="right">
+                <TableSortLabel
+                  active={sortField === "fats"}
+                  direction={sortField === "fats" ? sortOrder : "asc"}
+                  onClick={() => handleSort("fats" as SortField)}
+                >
+                  Tłuszcze (g)
+                </TableSortLabel>
+              </TableCell>
+
+              <TableCell align="right">
+                <TableSortLabel
+                  active={sortField === "calories"}
+                  direction={sortField === "calories" ? sortOrder : "asc"}
+                  onClick={() => handleSort("calories" as SortField)}
+                >
+                  Kalorie (kcal)
+                </TableSortLabel>
+              </TableCell>
+
               <TableCell align="right">Akcje</TableCell>
             </TableRow>
           </TableHead>
