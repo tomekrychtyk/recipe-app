@@ -68,6 +68,7 @@ router.post("/", validateMeal, async (req, res) => {
       data: {
         name: name.trim(),
         description: description?.trim(),
+        categoryId: req.body.categoryId,
         ingredients: {
           create: ingredients.map((ing: MealIngredient) => ({
             amount: ing.amount,
