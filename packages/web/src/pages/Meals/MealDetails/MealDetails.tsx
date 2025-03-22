@@ -14,10 +14,11 @@ import {
   Chip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetMealByIdQuery } from "../../store/api/meals";
-import { NutrientRDAGraph } from "../../components/NutrientRDAGraph";
 import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetMealByIdQuery } from "../../../store/api/meals";
+import { NutrientRDAGraph } from "../../../components/NutrientRDAGraph";
+import { getCategoryColor } from "../../../utils";
 
 export function MealDetails() {
   const { id } = useParams<{ id: string }>();
@@ -28,29 +29,6 @@ export function MealDetails() {
     return (
       FOOD_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
     );
-  };
-
-  const getCategoryColor = (
-    categoryId: string
-  ):
-    | "default"
-    | "primary"
-    | "secondary"
-    | "error"
-    | "info"
-    | "success"
-    | "warning" => {
-    const colors: Record<string, any> = {
-      vegetables: "success",
-      fruits: "error",
-      "dairy-eggs": "info",
-      poultry: "warning",
-      "fish-seafood": "primary",
-      "red-meat": "error",
-      grains: "warning",
-      "nuts-seeds": "success",
-    };
-    return colors[categoryId] || "default";
   };
 
   if (isLoading) {
