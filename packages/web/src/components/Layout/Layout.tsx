@@ -12,9 +12,7 @@ import {
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import AddBoxIcon from "@mui/icons-material/AddBox";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -26,9 +24,7 @@ interface LayoutProps {
 const navItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
   { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
-  { text: "Dodaj składnik", icon: <AddCircleIcon />, path: "/ingredients/new" },
   { text: "Przepisy", icon: <MenuBookIcon />, path: "/meals" },
-  { text: "Dodaj przepis", icon: <AddBoxIcon />, path: "/meals/new" },
 ];
 
 export function Layout({ children }: LayoutProps) {

@@ -17,11 +17,41 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetMealByIdQuery } from "../../store/api/meals";
 import { NutrientRDAGraph } from "../../components/NutrientRDAGraph";
+import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
 
 export function MealDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: meal, isLoading, error } = useGetMealByIdQuery(parseInt(id!));
+
+  const getCategoryName = (categoryId: string) => {
+    return (
+      FOOD_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
+    );
+  };
+
+  const getCategoryColor = (
+    categoryId: string
+  ):
+    | "default"
+    | "primary"
+    | "secondary"
+    | "error"
+    | "info"
+    | "success"
+    | "warning" => {
+    const colors: Record<string, any> = {
+      vegetables: "success",
+      fruits: "error",
+      "dairy-eggs": "info",
+      poultry: "warning",
+      "fish-seafood": "primary",
+      "red-meat": "error",
+      grains: "warning",
+      "nuts-seeds": "success",
+    };
+    return colors[categoryId] || "default";
+  };
 
   if (isLoading) {
     return (
@@ -132,7 +162,8 @@ export function MealDetails() {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       {ingredient.name}
                       <Chip
-                        label={ingredient.categoryId}
+                        label={getCategoryName(ingredient.categoryId)}
+                        color={getCategoryColor(ingredient.categoryId)}
                         size="small"
                         variant="outlined"
                       />

@@ -2,7 +2,7 @@ export const FOOD_CATEGORIES = [
   { name: "Drób", id: "poultry" },
   { name: "Mięso Czerwone", id: "red-meat" },
   { name: "Ryby i Owoce Morza", id: "fish-seafood" },
-  { name: "Mleko i Jaja", id: "dairy-eggs" },
+  { name: "Nabiał i Jaja", id: "dairy-eggs" },
   { name: "Warzywa", id: "vegetables" },
   { name: "Owoce", id: "fruits" },
   { name: "Makarony i Zboża", id: "grains" },

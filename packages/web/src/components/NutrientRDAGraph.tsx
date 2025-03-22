@@ -17,7 +17,7 @@ export function NutrientRDAGraph({ totalNutrients }: Props) {
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" gutterBottom>
-        Vitamins and Minerals
+        Witaminy i minerały
       </Typography>
 
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
@@ -42,8 +42,7 @@ export function NutrientRDAGraph({ totalNutrients }: Props) {
                       flexShrink: 0,
                     }}
                   >
-                    {nutrient.replace(/([A-Z])/g, " $1").trim()} (
-                    {percentage.toFixed(0)}%)
+                    {rdaValue.label} ({percentage.toFixed(0)}%)
                   </Typography>
                   <Box
                     sx={{
