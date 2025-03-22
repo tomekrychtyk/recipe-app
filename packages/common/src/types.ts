@@ -3,11 +3,47 @@ import type { FoodCategory } from "./constants/categories";
 export interface Ingredient {
   id: number;
   name: string;
-  categoryId: FoodCategory;
+  categoryId: string;
+
+  // Basic nutrients
   proteins: number;
   carbs: number;
   fats: number;
   calories: number;
+
+  // Vitamins
+  vitaminA?: number | null;
+  vitaminD?: number | null;
+  vitaminE?: number | null;
+  vitaminK?: number | null;
+  vitaminC?: number | null;
+  thiamin?: number | null;
+  riboflavin?: number | null;
+  niacin?: number | null;
+  pantothenicAcid?: number | null;
+  vitaminB6?: number | null;
+  biotin?: number | null;
+  folate?: number | null;
+  vitaminB12?: number | null;
+
+  // Minerals
+  calcium?: number | null;
+  iron?: number | null;
+  magnesium?: number | null;
+  phosphorus?: number | null;
+  potassium?: number | null;
+  sodium?: number | null;
+  zinc?: number | null;
+  copper?: number | null;
+  manganese?: number | null;
+  selenium?: number | null;
+  chromium?: number | null;
+  molybdenum?: number | null;
+  iodine?: number | null;
+
+  // Timestamps
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface MealIngredientInput {
