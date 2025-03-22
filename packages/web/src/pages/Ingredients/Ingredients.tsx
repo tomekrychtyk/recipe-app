@@ -34,7 +34,6 @@ import {
   FoodCategory,
 } from "@food-recipe-app/common/src/constants/categories";
 import { NutrientsState, NutrientsAction } from "@food-recipe-app/common";
-import { EditIngredientModal } from "../../components/EditIngredientModal";
 import { Ingredient } from "@food-recipe-app/common";
 import { Link } from "react-router-dom";
 
