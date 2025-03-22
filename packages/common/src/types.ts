@@ -31,3 +31,9 @@ export interface Meal {
     calories: number;
   };
 }
+
+export interface MealInput {
+  name: string;
+  description?: string;
+  ingredients: MealIngredientInput[];
+}

@@ -2,6 +2,7 @@ import type {
   Meal,
   Ingredient,
   MealIngredientInput,
+  MealInput,
 } from "@food-recipe-app/common";
 import { baseApi } from "./base";
 
@@ -18,7 +19,7 @@ export const mealsApi = baseApi.injectEndpoints({
       query: (id) => `/meals/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Meal", id }],
     }),
-    addMeal: builder.mutation<Meal, Omit<Meal, "id" | "totalNutrients">>({
+    addMeal: builder.mutation<Meal, MealInput>({
       query: (meal) => ({
         url: "/meals",
         method: "POST",
