@@ -70,7 +70,15 @@ export function MealDetails() {
 
       <MealIngredients meal={meal} />
 
-      <Box sx={{ p: 3 }}>
+      <Box
+        sx={{
+          py: 3,
+          px: {
+            xs: 0,
+            md: 12,
+          },
+        }}
+      >
         <NutrientRDAGraph totalNutrients={meal.totalNutrients} />
       </Box>
     </Box>
