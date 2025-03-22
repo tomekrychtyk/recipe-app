@@ -340,7 +340,7 @@ export function Ingredients() {
                   direction={sortField === "name" ? sortOrder : "asc"}
                   onClick={() => handleSort("name")}
                 >
-                  Name
+                  Nazwa
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -349,7 +349,7 @@ export function Ingredients() {
                   direction={sortField === "categoryId" ? sortOrder : "asc"}
                   onClick={() => handleSort("categoryId")}
                 >
-                  Category
+                  Kategoria
                 </TableSortLabel>
               </TableCell>
               {["proteins", "carbs", "fats", "calories"].map((field) => (
@@ -364,7 +364,7 @@ export function Ingredients() {
                   </TableSortLabel>
                 </TableCell>
               ))}
-              <TableCell align="right">Actions</TableCell>
+              <TableCell align="right">Akcje</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
