@@ -67,9 +67,34 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          # Create deployment package
+          # Create deployment package with common package
           cd packages/server
-          tar -czf deploy.tar.gz dist package.json prisma
+          mkdir -p deploy/packages/server
+          mkdir -p deploy/packages/common
+
+          # Copy server files
+          cp -r dist package.json prisma deploy/packages/server/
+
+          # Copy common package
+          cp -r ../common/dist ../common/package.json deploy/packages/common/
+
+          # Create root package.json for pnpm workspace
+          echo '{
+            "name": "food-recipe-app",
+            "private": true,
+            "workspaces": [
+              "packages/*"
+            ]
+          }' > deploy/package.json
+
+          # Create pnpm-workspace.yaml
+          echo 'packages:
+            - "packages/*"' > deploy/pnpm-workspace.yaml
+
+          # Create deployment archive
+          cd deploy
+          tar -czf ../deploy.tar.gz .
+          cd ..
 
           # Copy files to EC2
           scp -i ~/.ssh/key.pem deploy.tar.gz ec2:~/server-deploy.tar.gz
@@ -92,7 +117,7 @@ jobs:
             pnpm prisma migrate deploy
             
             # Start server
-            pm2 start dist/index.js --name food-app-server
+            pm2 start packages/server/dist/index.js --name food-app-server
             
             # Clean up
             rm ~/server-deploy.tar.gz
