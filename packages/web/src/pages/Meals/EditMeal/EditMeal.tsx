@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
@@ -23,7 +24,8 @@ import {
   useUpdateMealMutation,
 } from "../../../store/api/meals";
 import { useGetIngredientsQuery } from "../../../store/api/ingredients";
-import type { Ingredient } from "@food-recipe-app/common";
+import type { Ingredient, MealCategory } from "@food-recipe-app/common";
+import { MEAL_CATEGORIES } from "@food-recipe-app/common";
 
 interface SelectedIngredient {
   ingredient: Ingredient;
@@ -36,6 +38,9 @@ export function EditMeal() {
   const mealId = parseInt(id!);
 
   const { data: meals, isLoading: isMealsLoading } = useGetMealsQuery();
+  const [categoryId, setCategoryId] = useState<MealCategory>(
+    MEAL_CATEGORIES[0].id
+  );
   const { data: ingredients = [], isLoading: isIngredientsLoading } =
     useGetIngredientsQuery();
   const [updateMeal, { isLoading: isUpdating, error }] =
@@ -56,6 +61,7 @@ export function EditMeal() {
     if (meal) {
       setName(meal.name);
       setDescription(meal.description || "");
+      setCategoryId(meal.categoryId);
       setSelectedIngredients(
         meal.ingredients
           .map((ing) => ({
@@ -100,7 +106,7 @@ export function EditMeal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedIngredients.length === 0) {
-      alert("Please add at least one ingredient");
+      alert("Proszę dodać przynajmniej jeden składnik");
       return;
     }
 
@@ -109,6 +115,7 @@ export function EditMeal() {
         id: mealId,
         name,
         description,
+        categoryId,
         ingredients: selectedIngredients.map(({ ingredient, amount }) => ({
           ingredientId: ingredient.id,
           amount,
@@ -145,7 +152,7 @@ export function EditMeal() {
 
         {error && (
           <Alert severity="error" sx={{ mb: 2 }}>
-            Failed to update meal
+            Nie udało się zaktualizować przepisu
           </Alert>
         )}
 
@@ -168,6 +175,23 @@ export function EditMeal() {
             rows={2}
             sx={{ mb: 3 }}
           />
+
+          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            <TextField
+              fullWidth
+              select
+              label="Kategoria"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value as MealCategory)}
+              required
+            >
+              {MEAL_CATEGORIES.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
 
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
             <Autocomplete

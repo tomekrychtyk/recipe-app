@@ -33,6 +33,7 @@ export const getCategoryName = (categoryId: string) => {
 };
 
 export const getMealCategoryName = (categoryId: string) => {
+  console.log(categoryId);
   return (
     MEAL_CATEGORIES.find((cat) => cat.id === categoryId)?.name || categoryId
   );

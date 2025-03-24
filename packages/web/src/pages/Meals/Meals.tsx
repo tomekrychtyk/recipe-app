@@ -150,7 +150,7 @@ export function Meals() {
             {meals.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  No meals found. Add some!
+                  Nie zostały dodane żadne przepisy.
                 </TableCell>
               </TableRow>
             )}

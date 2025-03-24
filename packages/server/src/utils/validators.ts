@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { FOOD_CATEGORIES } from "@food-recipe-app/common/src/constants/categories";
 
 export const validateIngredient = (
   req: Request,
@@ -76,12 +75,16 @@ export const validateMeal = (
   res: Response,
   next: NextFunction
 ) => {
-  const { name, description, ingredients } = req.body;
+  const { name, description, ingredients, categoryId } = req.body;
 
   const errors: string[] = [];
 
   if (!name || typeof name !== "string" || name.trim().length === 0) {
     errors.push("Name is required and must be a non-empty string");
+  }
+
+  if (!categoryId || !["breakfast", "dinner", "snack"].includes(categoryId)) {
+    errors.push("Valid category ID (breakfast, dinner, snack) is required");
   }
 
   if (description && typeof description !== "string") {

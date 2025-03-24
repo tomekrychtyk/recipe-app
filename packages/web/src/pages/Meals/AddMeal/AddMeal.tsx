@@ -14,13 +14,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAddMealMutation } from "../../../store/api/meals";
-import { useGetIngredientsQuery } from "../../../store/api/ingredients";
-import type { Ingredient } from "@food-recipe-app/common";
+import { useAddMealMutation } from "@/store/api/meals";
+import { useGetIngredientsQuery } from "@/store/api/ingredients";
+import type { Ingredient, MealCategory } from "@food-recipe-app/common";
+import { MEAL_CATEGORIES } from "@food-recipe-app/common";
 
 interface SelectedIngredient {
   ingredient: Ingredient;
@@ -32,6 +34,9 @@ export function AddMeal() {
   const [addMeal, { isLoading, error }] = useAddMealMutation();
   const { data: ingredients = [] } = useGetIngredientsQuery();
 
+  const [categoryId, setCategoryId] = useState<MealCategory>(
+    MEAL_CATEGORIES[0].id
+  );
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedIngredients, setSelectedIngredients] = useState<
@@ -83,6 +88,7 @@ export function AddMeal() {
       await addMeal({
         name,
         description,
+        categoryId,
         ingredients: selectedIngredients.map(({ ingredient, amount }) => ({
           ingredientId: ingredient.id,
           amount,
@@ -145,6 +151,23 @@ export function AddMeal() {
             >
               Add
             </Button>
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            <TextField
+              fullWidth
+              select
+              label="Kategoria"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value as MealCategory)}
+              required
+            >
+              {MEAL_CATEGORIES.map((category) => (
+                <MenuItem key={category.id} value={category.id}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Box>
 
           {selectedIngredients.length > 0 && (

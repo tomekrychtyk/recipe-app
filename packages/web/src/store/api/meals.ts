@@ -3,6 +3,7 @@ import type {
   Ingredient,
   MealIngredientInput,
   MealInput,
+  MealCategory,
 } from "@food-recipe-app/common";
 import { baseApi } from "./base";
 
@@ -33,6 +34,7 @@ export const mealsApi = baseApi.injectEndpoints({
         id: number;
         name: string;
         description?: string;
+        categoryId: MealCategory;
         ingredients: MealIngredientInput[];
       }
     >({

@@ -26,6 +26,7 @@ router.get("/", async (_req, res) => {
     const mealsWithNutrients = meals.map((meal) => ({
       id: meal.id,
       name: meal.name,
+      categoryId: meal.categoryId,
       description: meal.description,
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
@@ -142,7 +143,7 @@ router.put("/:id", validateMeal, async (req, res) => {
       return res.status(400).json({ errors: ["Invalid meal ID"] });
     }
 
-    const { name, description, ingredients } = req.body;
+    const { name, description, ingredients, categoryId } = req.body;
 
     const ingredientIds = ingredients.map(
       (i: MealIngredient) => i.ingredientId
@@ -171,6 +172,7 @@ router.put("/:id", validateMeal, async (req, res) => {
         data: {
           name: name.trim(),
           description: description?.trim(),
+          categoryId,
           ingredients: {
             create: ingredients.map((ing: MealIngredient) => ({
               amount: ing.amount,
