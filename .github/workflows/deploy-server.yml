@@ -26,14 +26,20 @@ jobs:
           version: 8
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build common package
         run: |
           cd packages/common
           pnpm build
+          cd ..
 
-      - name: Build server package
+      - name: Type check server
+        run: |
+          cd packages/server
+          pnpm tsc --noEmit
+
+      - name: Build server
         run: |
           cd packages/server
           pnpm build
