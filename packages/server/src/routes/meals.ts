@@ -189,6 +189,7 @@ router.put("/:id", validateMeal, async (req, res) => {
       });
     });
 
+    // trigger action
     const totalNutrients = calculateTotalNutrients(meal.ingredients);
 
     res.json({
