@@ -76,13 +76,6 @@ jobs:
 
           # Execute deployment commands
           ssh ec2 'bash -l -c "
-            # Load NVM
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            
-            # Use the correct Node version
-            nvm use 18
-            
             # Stop existing server
             pm2 stop food-app-server || true
             
