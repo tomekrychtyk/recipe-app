@@ -37,11 +37,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate Prisma Client
+        run: |
+          cd packages/server
+          pnpm prisma generate
+
       - name: Build common package
         run: |
           cd packages/common
           pnpm build
           cd ..
+
+      - name: Type check server
+        run: |
+          cd packages/server
+          pnpm tsc --noEmit
 
       - name: Build server
         run: |
