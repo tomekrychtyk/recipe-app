@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import type { Meal, MealIngredient } from "@food-recipe-app/common";
 import { validateMeal } from "../utils/validators";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -7,6 +7,16 @@ import { calculateTotalNutrients } from "../utils/calculations";
 
 const router = Router();
 const prisma = new PrismaClient();
+
+type MealWithIngredients = Prisma.MealGetPayload<{
+  include: {
+    ingredients: {
+      include: {
+        ingredient: true;
+      };
+    };
+  };
+}>;
 
 router.get("/", async (_req, res) => {
   try {
@@ -23,8 +33,7 @@ router.get("/", async (_req, res) => {
       },
     });
 
-    // gh action trigger2
-    const mealsWithNutrients = meals.map((meal) => ({
+    const mealsWithNutrients = meals.map((meal: MealWithIngredients) => ({
       id: meal.id,
       name: meal.name,
       categoryId: meal.categoryId,
@@ -211,7 +220,7 @@ router.put("/:id", validateMeal, async (req, res) => {
       description: meal.description,
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
-        amount: ing.amount,
+        quantity: ing.amount,
       })),
       totalNutrients,
     });
