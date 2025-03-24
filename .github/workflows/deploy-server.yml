@@ -1,0 +1,79 @@
+rDjcjSI2YMyNtUVFname: Deploy Server to EC2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/server/**"
+      - "packages/common/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build common package
+        run: |
+          cd packages/common
+          pnpm build
+
+      - name: Build server package
+        run: |
+          cd packages/server
+          pnpm build
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_SSH_KEY }}" > ~/.ssh/key.pem
+          chmod 600 ~/.ssh/key.pem
+          echo -e "Host ec2\n\tHostName ${{ secrets.AWS_HOST }}\n\tUser ${{ secrets.AWS_USERNAME }}\n\tIdentityFile ~/.ssh/key.pem\n\tStrictHostKeyChecking no" > ~/.ssh/config
+
+      - name: Deploy to EC2
+        run: |
+          # Create deployment package
+          cd packages/server
+          tar -czf deploy.tar.gz dist package.json pnpm-lock.yaml prisma
+
+          # Copy files to EC2
+          scp -i ~/.ssh/key.pem deploy.tar.gz ec2:~/server-deploy.tar.gz
+
+          # Execute deployment commands
+          ssh ec2 '
+            # Stop existing server
+            pm2 stop food-app-server || true
+            
+            # Clean up old deployment
+            rm -rf ~/food-app-server
+            mkdir -p ~/food-app-server
+            
+            # Extract new deployment
+            tar -xzf server-deploy.tar.gz -C ~/food-app-server
+            cd ~/food-app-server
+            
+            # Install dependencies and run migrations
+            pnpm install --prod
+            pnpm prisma migrate deploy
+            
+            # Start server
+            pm2 start dist/index.js --name food-app-server
+            
+            # Clean up
+            rm ~/server-deploy.tar.gz
+          '
