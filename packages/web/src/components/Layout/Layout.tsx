@@ -14,6 +14,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import MenuIcon from "@mui/icons-material/Menu";
+import { FoodBank } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -28,7 +29,7 @@ const navItems = [
   {
     text: "Sugestie posiłków",
     path: "/meal-suggestions",
-    icon: <RestaurantIcon />,
+    icon: <FoodBank />,
   },
 ];
 
