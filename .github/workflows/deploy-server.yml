@@ -66,6 +66,9 @@ jobs:
           echo -e "Host ec2\n\tHostName ${{ secrets.AWS_HOST }}\n\tUser ${{ secrets.AWS_USERNAME }}\n\tIdentityFile ~/.ssh/key.pem\n\tStrictHostKeyChecking no" > ~/.ssh/config
 
       - name: Deploy to EC2
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
         run: |
           # Create deployment package with common package
           cd packages/server
@@ -90,6 +93,10 @@ jobs:
           # Create pnpm-workspace.yaml
           echo 'packages:
             - "packages/*"' > deploy/pnpm-workspace.yaml
+
+          # Create .env file
+          echo "DATABASE_URL=\"${DATABASE_URL}\"" > deploy/packages/server/.env
+          echo "DIRECT_URL=\"${DIRECT_URL}\"" >> deploy/packages/server/.env
 
           # Create deployment archive
           cd deploy
@@ -119,7 +126,7 @@ jobs:
             # Install dependencies
             pnpm install --prod
             cd packages/server
-            pnpm add prisma --save-dev
+            pnpm add prisma@5.22.0 --save-dev
             
             # Generate Prisma client and run migrations
             npx prisma generate
