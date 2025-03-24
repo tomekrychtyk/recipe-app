@@ -69,7 +69,7 @@ jobs:
         run: |
           # Create deployment package
           cd packages/server
-          tar -czf deploy.tar.gz dist package.json pnpm-lock.yaml prisma
+          tar -czf deploy.tar.gz dist package.json prisma
 
           # Copy files to EC2
           scp -i ~/.ssh/key.pem deploy.tar.gz ec2:~/server-deploy.tar.gz

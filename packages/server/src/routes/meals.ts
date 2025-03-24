@@ -62,7 +62,7 @@ router.get("/", async (_req, res) => {
   }
 });
 
-// trigger 2
+// trigger 3
 router.post("/", validateMeal, async (req, res) => {
   try {
     const { name, description, ingredients } = req.body;
