@@ -23,7 +23,7 @@ router.get("/", async (_req, res) => {
       },
     });
 
-    // gh action trigger
+    // gh action trigger2
     const mealsWithNutrients = meals.map((meal) => ({
       id: meal.id,
       name: meal.name,
