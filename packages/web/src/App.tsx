@@ -8,6 +8,7 @@ import { Ingredients } from "./pages/Ingredients";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { Meals, AddMeal, EditMeal, MealDetails } from "./pages/Meals";
+import { MealSuggestions } from "./pages/MealSuggestions/MealSuggestions";
 
 export function App() {
   return (
@@ -26,6 +27,10 @@ export function App() {
                   <Route path="/meals/new" element={<AddMeal />} />
                   <Route path="/meals/:id/edit" element={<EditMeal />} />
                   <Route path="/meals/:id" element={<MealDetails />} />
+                  <Route
+                    path="/meal-suggestions"
+                    element={<MealSuggestions />}
+                  />
                 </Routes>
               </Box>
             </Layout>

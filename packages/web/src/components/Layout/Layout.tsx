@@ -25,6 +25,11 @@ const navItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
   { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
   { text: "Przepisy", icon: <MenuBookIcon />, path: "/meals" },
+  {
+    text: "Sugestie posiłków",
+    path: "/meal-suggestions",
+    icon: <RestaurantIcon />,
+  },
 ];
 
 export function Layout({ children }: LayoutProps) {
