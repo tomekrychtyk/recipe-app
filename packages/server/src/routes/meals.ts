@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { PrismaClient, Prisma } from "@prisma/client";
-import type { Meal, MealIngredient } from "@food-recipe-app/common";
+import { PrismaClient } from "@prisma/client";
+import type { Meal, MealIngredient, Ingredient } from "@prisma/client";
 import { validateMeal } from "../utils/validators";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { calculateTotalNutrients } from "../utils/calculations";
@@ -8,15 +8,11 @@ import { calculateTotalNutrients } from "../utils/calculations";
 const router = Router();
 const prisma = new PrismaClient();
 
-type MealWithIngredients = Prisma.MealGetPayload<{
-  include: {
-    ingredients: {
-      include: {
-        ingredient: true;
-      };
-    };
-  };
-}>;
+type MealWithIngredients = Meal & {
+  ingredients: (MealIngredient & {
+    ingredient: Ingredient;
+  })[];
+};
 
 router.get("/", async (_req, res) => {
   try {
@@ -33,7 +29,7 @@ router.get("/", async (_req, res) => {
       },
     });
 
-    const mealsWithNutrients = meals.map((meal: MealWithIngredients) => ({
+    const mealsWithNutrients = (meals as MealWithIngredients[]).map((meal) => ({
       id: meal.id,
       name: meal.name,
       categoryId: meal.categoryId,
