@@ -75,7 +75,10 @@ jobs:
           scp -i ~/.ssh/key.pem deploy.tar.gz ec2:~/server-deploy.tar.gz
 
           # Execute deployment commands
-          ssh ec2 '
+          ssh ec2 'bash -l -c "
+            # Load user environment
+            source ~/.bashrc
+            
             # Stop existing server
             pm2 stop food-app-server || true
             
@@ -96,4 +99,4 @@ jobs:
             
             # Clean up
             rm ~/server-deploy.tar.gz
-          '
+          "'
