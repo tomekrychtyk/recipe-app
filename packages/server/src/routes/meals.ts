@@ -162,33 +162,45 @@ router.put("/:id", validateMeal, async (req, res) => {
       });
     }
 
-    const meal = await prisma.$transaction(async (prisma) => {
-      await prisma.mealIngredient.deleteMany({
-        where: { mealId: id },
-      });
+    const meal = await prisma.$transaction(
+      async (
+        tx: Omit<
+          PrismaClient,
+          | "$connect"
+          | "$disconnect"
+          | "$on"
+          | "$transaction"
+          | "$use"
+          | "$extends"
+        >
+      ) => {
+        await tx.mealIngredient.deleteMany({
+          where: { mealId: id },
+        });
 
-      return prisma.meal.update({
-        where: { id },
-        data: {
-          name: name.trim(),
-          description: description?.trim(),
-          categoryId,
-          ingredients: {
-            create: ingredients.map((ing: MealIngredient) => ({
-              amount: ing.amount,
-              ingredientId: ing.ingredientId,
-            })),
-          },
-        },
-        include: {
-          ingredients: {
-            include: {
-              ingredient: true,
+        return tx.meal.update({
+          where: { id },
+          data: {
+            name: name.trim(),
+            description: description?.trim(),
+            categoryId,
+            ingredients: {
+              create: ingredients.map((ing: MealIngredient) => ({
+                amount: ing.amount,
+                ingredientId: ing.ingredientId,
+              })),
             },
           },
-        },
-      });
-    });
+          include: {
+            ingredients: {
+              include: {
+                ingredient: true,
+              },
+            },
+          },
+        });
+      }
+    );
 
     const totalNutrients = calculateTotalNutrients(meal.ingredients);
 
@@ -198,7 +210,7 @@ router.put("/:id", validateMeal, async (req, res) => {
       description: meal.description,
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
-        quantity: ing.amount,
+        amount: ing.amount,
       })),
       totalNutrients,
     });
