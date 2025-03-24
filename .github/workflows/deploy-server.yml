@@ -1,4 +1,4 @@
-rDjcjSI2YMyNtUVFname: Deploy Server to EC2
+name: Deploy Server to EC2
 
 on:
   push:
