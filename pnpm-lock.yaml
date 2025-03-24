@@ -18,7 +18,11 @@ importers:
         specifier: ^5.0.0
         version: 5.8.2
 
-  packages/common: {}
+  packages/common:
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.2
 
   packages/server:
     dependencies:
