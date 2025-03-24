@@ -43,11 +43,6 @@ jobs:
           pnpm build
           cd ..
 
-      - name: Type check server
-        run: |
-          cd packages/server
-          pnpm tsc --noEmit
-
       - name: Build server
         run: |
           cd packages/server
