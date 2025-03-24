@@ -112,11 +112,18 @@ jobs:
             tar -xzf server-deploy.tar.gz -C ~/food-app-server
             cd ~/food-app-server
             
-            # Install dependencies and run migrations
+            # Install dependencies
             pnpm install --prod
+            
+            # Generate Prisma client
+            cd packages/server
+            pnpm prisma generate
+            
+            # Run migrations
             pnpm prisma migrate deploy
             
             # Start server
+            cd ../..
             pm2 start packages/server/dist/index.js --name food-app-server
             
             # Clean up
