@@ -23,7 +23,11 @@ import {
   Chip,
   Divider,
 } from "@mui/material";
-import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Visibility as VisibilityIcon,
+} from "@mui/icons-material";
 import {
   useGetIngredientsQuery,
   useDeleteIngredientMutation,
@@ -224,6 +228,27 @@ export function Ingredients() {
     }
   };
 
+  const handleViewClick = (ingredient: Ingredient) => {
+    setSelectedIngredient(ingredient);
+    setEditName(ingredient.name);
+    setEditCategory(ingredient.categoryId as FoodCategory);
+    Object.entries(ingredient).forEach(([key, value]) => {
+      if (key in initialState) {
+        dispatch({
+          type:
+            key in ["proteins", "carbs", "fats", "calories"]
+              ? "SET_BASIC_NUTRIENT"
+              : key.startsWith("vitamin")
+                ? "SET_VITAMIN"
+                : "SET_MINERAL",
+          field: key as any,
+          value: value as any,
+        });
+      }
+    });
+    setEditDialogOpen(true);
+  };
+
   useEffect(() => {
     if (selectedIngredient) {
       setEditName(selectedIngredient.name);
@@ -392,7 +417,7 @@ export function Ingredients() {
                   Kalorie (kcal)
                 </TableSortLabel>
               </TableCell>
-              {isAdmin && <TableCell align="right">Akcje</TableCell>}
+              <TableCell align="right">Akcje</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -420,30 +445,39 @@ export function Ingredients() {
                 <TableCell align="right">
                   {ingredient.calories.toFixed(2)}
                 </TableCell>
-                {isAdmin && (
-                  <TableCell align="right">
+                <TableCell align="right">
+                  {isAdmin ? (
+                    <>
+                      <IconButton
+                        onClick={() => handleEditClick(ingredient)}
+                        disabled={isDeleting || isUpdating}
+                        color="primary"
+                        sx={{ mr: 1 }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteClick(ingredient.id)}
+                        disabled={isDeleting}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  ) : (
                     <IconButton
-                      onClick={() => handleEditClick(ingredient)}
-                      disabled={isDeleting || isUpdating}
+                      onClick={() => handleViewClick(ingredient)}
                       color="primary"
-                      sx={{ mr: 1 }}
                     >
-                      <EditIcon />
+                      <VisibilityIcon />
                     </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteClick(ingredient.id)}
-                      disabled={isDeleting}
-                      color="error"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                )}
+                  )}
+                </TableCell>
               </TableRow>
             ))}
             {sortedAndFilteredIngredients.length === 0 && (
               <TableRow>
-                <TableCell colSpan={isAdmin ? 7 : 6} align="center">
+                <TableCell colSpan={7} align="center">
                   {searchTerm || categoryFilter
                     ? "No ingredients found matching your filters"
                     : "No ingredients found. Add some!"}
@@ -478,7 +512,9 @@ export function Ingredients() {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Edytuj składnik</DialogTitle>
+        <DialogTitle>
+          {isAdmin ? "Edytuj składnik" : "Szczegóły składnika"}
+        </DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
@@ -486,6 +522,7 @@ export function Ingredients() {
             value={editName}
             onChange={(e) => setEditName(e.target.value)}
             margin="normal"
+            InputProps={{ readOnly: !isAdmin }}
           />
           <TextField
             select
@@ -494,6 +531,7 @@ export function Ingredients() {
             value={editCategory}
             onChange={(e) => setEditCategory(e.target.value as FoodCategory)}
             margin="normal"
+            InputProps={{ readOnly: !isAdmin }}
           >
             {FOOD_CATEGORIES.map((cat) => (
               <MenuItem key={cat.id} value={cat.id}>
@@ -505,7 +543,14 @@ export function Ingredients() {
           <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
             Makroskładniki (na 100g)
           </Typography>
-          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 2,
+              mb: 4,
+            }}
+          >
             <TextField
               type="number"
               label="Białko (g)"
@@ -517,7 +562,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
-              fullWidth
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -530,7 +575,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
-              fullWidth
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -543,7 +588,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
-              fullWidth
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -556,14 +601,12 @@ export function Ingredients() {
                   e.target.value
                 )
               }
-              fullWidth
+              InputProps={{ readOnly: !isAdmin }}
             />
           </Box>
 
-          <Divider sx={{ my: 4 }} />
-
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Witaminy (na 100g)
+          <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
+            Witaminy
           </Typography>
           <Box
             sx={{
@@ -580,6 +623,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminA", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -588,6 +632,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminD", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -596,6 +641,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminE", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -604,6 +650,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminK", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -612,6 +659,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminC", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -620,6 +668,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "thiamin", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -632,6 +681,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -640,6 +690,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "niacin", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -652,6 +703,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -660,6 +712,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "vitaminB6", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -668,6 +721,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "biotin", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -676,6 +730,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_VITAMIN", "folate", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -688,13 +743,12 @@ export function Ingredients() {
                   e.target.value
                 )
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
           </Box>
 
-          <Divider sx={{ my: 4 }} />
-
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Minerały (na 100g)
+          <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
+            Minerały
           </Typography>
           <Box
             sx={{
@@ -711,6 +765,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "calcium", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -719,6 +774,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "iron", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -727,6 +783,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "magnesium", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -739,6 +796,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -747,6 +805,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "potassium", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -755,6 +814,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "sodium", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -763,6 +823,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "zinc", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -771,6 +832,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "copper", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -779,6 +841,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "manganese", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -787,6 +850,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "selenium", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -795,6 +859,7 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "chromium", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -807,6 +872,7 @@ export function Ingredients() {
                   e.target.value
                 )
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
             <TextField
               type="number"
@@ -815,14 +881,23 @@ export function Ingredients() {
               onChange={(e) =>
                 handleNutrientChange("SET_MINERAL", "iodine", e.target.value)
               }
+              InputProps={{ readOnly: !isAdmin }}
             />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleEditClose}>Anuluj</Button>
-          <Button onClick={handleEditSubmit} variant="contained">
-            Zapisz zmiany
+          <Button onClick={handleEditClose}>
+            {isAdmin ? "Anuluj" : "Zamknij"}
           </Button>
+          {isAdmin && (
+            <Button
+              onClick={handleEditSubmit}
+              variant="contained"
+              disabled={isUpdating}
+            >
+              {isUpdating ? "Zapisywanie..." : "Zapisz"}
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </Box>
