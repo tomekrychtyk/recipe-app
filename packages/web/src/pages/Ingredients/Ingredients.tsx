@@ -468,7 +468,7 @@ export function Ingredients() {
         open={deleteConfirmId !== null}
         onClose={() => setDeleteConfirmId(null)}
       >
-        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogTitle>Potwierdź usunięcie</DialogTitle>
         <DialogContent>Czy na pewno chcesz usunąć ten składnik?</DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmId(null)}>Anuluj</Button>

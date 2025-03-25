@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import {
   Box,
   Paper,
@@ -58,12 +59,42 @@ export function MealSuggestions() {
   }, [meals, selectedIngredients, ingredients]);
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Sugestie posiłków
-      </Typography>
+    <Box sx={{ p: 3, pt: 0 }}>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-3xl font-bold mb-4 text-emerald-600">
+          🧪 SInteligentny Dobór Posiłków 🍳
+        </h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
+        >
+          Masz składniki, ale nie wiesz co ugotować? Pomożemy Ci znaleźć idealny
+          posiłek! Po prostu wybierz składniki, które masz pod ręką, a my
+          zaproponujemy pyszne przepisy, które możesz z nich przygotować. Koniec
+          z marnowaniem jedzenia, czas na smaczne możliwości! ✨
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-4"
+        >
+          <span>🥕 Wybierz składniki</span>
+          <span className="text-gray-400">→</span>
+          <span>📖 Znajdź przepisy</span>
+          <span className="text-gray-400">→</span>
+          <span>🍽️ Zacznij gotować!</span>
+        </motion.div>
+      </motion.div>
 
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ p: 3, mb: 3, mt: 4 }}>
         <Typography variant="h6" gutterBottom>
           Wybierz dostępne składniki:
         </Typography>
