@@ -1,5 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { motion } from "framer-motion";
+import { Google as GoogleIcon } from "@mui/icons-material";
+import { Box, Typography, Button, Paper } from "@mui/material";
 
 export function LoginPage() {
   const { signInWithGoogle, error } = useAuth();
@@ -13,26 +16,143 @@ export function LoginPage() {
     navigate(from, { replace: true });
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
-        <div className="mt-8 space-y-6">
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "background.default",
+        p: 3,
+      }}
+    >
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        style={{ width: "100%", maxWidth: "440px" }}
+      >
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: 2,
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
+          <motion.div variants={itemVariants}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mb: 4,
+              }}
+            >
+              <Typography
+                variant="h3"
+                component="h1"
+                sx={{
+                  mb: 1,
+                  fontSize: { xs: "2rem", sm: "2.5rem" },
+                  background:
+                    "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
+                  backgroundClip: "text",
+                  textFillColor: "transparent",
+                  fontWeight: "bold",
+                }}
+              >
+                Welcome Back 👋
+              </Typography>
+              <Typography
+                variant="body1"
+                color="text.secondary"
+                align="center"
+                sx={{ mt: 2, mb: 3 }}
+              >
+                Sign in to access your meal plans and recipes
+              </Typography>
+            </Box>
+          </motion.div>
+
           {error && (
-            <div className="text-red-500 text-center text-sm">{error}</div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Typography
+                color="error"
+                align="center"
+                sx={{ mb: 2, fontSize: "0.875rem" }}
+              >
+                {error}
+              </Typography>
+            </motion.div>
           )}
-          <button
-            onClick={handleGoogleSignIn}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Sign in with Google
-          </button>
-        </div>
-      </div>
-    </div>
+
+          <motion.div variants={itemVariants}>
+            <Button
+              onClick={handleGoogleSignIn}
+              variant="contained"
+              fullWidth
+              size="large"
+              startIcon={<GoogleIcon />}
+              sx={{
+                mt: 2,
+                bgcolor: "primary.main",
+                color: "background.paper",
+                py: 1.5,
+                transition: "all 0.2s ease-in-out",
+                transform: "scale(1)",
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                  transform: "scale(1.02)",
+                },
+              }}
+            >
+              Continue with Google
+            </Button>
+          </motion.div>
+
+          <motion.div variants={itemVariants}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              align="center"
+              sx={{ mt: 4 }}
+            >
+              By signing in, you agree to our Terms of Service and Privacy
+              Policy
+            </Typography>
+          </motion.div>
+        </Paper>
+      </motion.div>
+    </Box>
   );
 }
