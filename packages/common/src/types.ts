@@ -106,6 +106,8 @@ export interface MealInput {
   name: string;
   description?: string;
   ingredients: MealIngredientInput[];
+  categoryId: MealCategory;
+  userId?: string;
 }
 
 export interface NutrientsState {

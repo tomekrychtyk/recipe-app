@@ -25,7 +25,11 @@ import { useState } from "react";
 import { getMealCategoryName } from "@/utils/meals";
 
 export function Meals() {
-  const { data: meals = [], isLoading, error } = useGetMealsQuery();
+  const {
+    data: meals = [],
+    isLoading,
+    error,
+  } = useGetMealsQuery({ publicOnly: true });
   const [deleteMeal, { isLoading: isDeleting }] = useDeleteMealMutation();
   const navigate = useNavigate();
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);

@@ -27,14 +27,15 @@ type MealIngredientWithIngredient = Prisma.MealIngredientGetPayload<{
 
 router.get("/", async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { userId, publicOnly } = req.query;
 
     const meals = await prisma.meal.findMany({
-      where: userId
-        ? {
-            userId: userId as string,
-          }
-        : undefined,
+      where:
+        publicOnly === "true"
+          ? { userId: null }
+          : userId
+            ? { userId: userId as string }
+            : undefined,
       include: {
         ingredients: {
           include: {

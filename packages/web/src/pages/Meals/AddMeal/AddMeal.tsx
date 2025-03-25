@@ -23,6 +23,7 @@ import { useAddMealMutation } from "@/store/api/meals";
 import { useGetIngredientsQuery } from "@/store/api/ingredients";
 import type { Ingredient, MealCategory } from "@food-recipe-app/common";
 import { MEAL_CATEGORIES } from "@food-recipe-app/common";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SelectedIngredient {
   ingredient: Ingredient;
@@ -31,6 +32,7 @@ interface SelectedIngredient {
 
 export function AddMeal() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [addMeal, { isLoading, error }] = useAddMealMutation();
   const { data: ingredients = [] } = useGetIngredientsQuery();
 
@@ -88,14 +90,15 @@ export function AddMeal() {
       await addMeal({
         name,
         description,
-        categoryId,
         ingredients: selectedIngredients.map(({ ingredient, amount }) => ({
           ingredientId: ingredient.id,
           amount,
         })),
+        categoryId,
+        userId: user?.id,
       }).unwrap();
 
-      navigate("/meals");
+      navigate("/my-meals");
     } catch (error) {
       console.error("Failed to create meal:", error);
     }

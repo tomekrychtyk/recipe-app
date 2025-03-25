@@ -9,6 +9,7 @@ import { baseApi } from "./base";
 
 interface GetMealsParams {
   userId?: string;
+  publicOnly?: boolean;
 }
 
 export const mealsApi = baseApi.injectEndpoints({
@@ -16,7 +17,12 @@ export const mealsApi = baseApi.injectEndpoints({
     getMeals: builder.query<Meal[], GetMealsParams | void>({
       query: (params) => ({
         url: "/meals",
-        params: params ? { userId: params.userId } : undefined,
+        params: params
+          ? {
+              userId: params.userId,
+              publicOnly: params.publicOnly,
+            }
+          : undefined,
       }),
       providesTags: ["Meal"],
     }),
