@@ -3,10 +3,12 @@ import { PrismaClient } from "@prisma/client";
 import type { Ingredient } from "@food-recipe-app/common";
 import { validateIngredient } from "../utils/validators";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { requireAdmin } from "../middleware/auth";
 
 const router = Router();
 const prisma = new PrismaClient();
 
+// Public routes
 router.get("/", async (_req, res) => {
   try {
     const ingredients = await prisma.ingredient.findMany({
@@ -131,7 +133,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", validateIngredient, async (req, res) => {
+// Admin-only routes
+router.post("/", requireAdmin, validateIngredient, async (req, res) => {
   try {
     const { name, categoryId, ...nutrients } = req.body;
 
@@ -150,7 +153,7 @@ router.post("/", validateIngredient, async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", requireAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
 
@@ -171,7 +174,7 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-router.put("/:id", validateIngredient, async (req, res) => {
+router.put("/:id", requireAdmin, validateIngredient, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
 

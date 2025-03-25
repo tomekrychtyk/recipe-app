@@ -36,10 +36,10 @@ interface LayoutProps {
 const publicNavItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
   { text: "Przepisy", icon: <MenuBookIcon />, path: "/meals" },
+  { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
 ];
 
 const authenticatedNavItems = [
-  { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
   {
     text: "Sugestie posiłków",
     path: "/meal-suggestions",

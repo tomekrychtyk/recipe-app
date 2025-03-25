@@ -36,6 +36,7 @@ import {
 import { NutrientsState, NutrientsAction } from "@food-recipe-app/common";
 import { Ingredient } from "@food-recipe-app/common";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 type SortField =
   | "name"
@@ -98,6 +99,7 @@ function nutrientsReducer(
 }
 
 export function Ingredients() {
+  const { isAdmin } = useAuth();
   const { data: ingredients = [], isLoading, error } = useGetIngredientsQuery();
   const [deleteIngredient, { isLoading: isDeleting }] =
     useDeleteIngredientMutation();
@@ -289,14 +291,16 @@ export function Ingredients() {
         <Typography variant="h4" component="h1">
           🥗 Składniki
         </Typography>
-        <Button
-          component={Link}
-          to="/ingredients/new"
-          variant="contained"
-          color="primary"
-        >
-          Dodaj składnik
-        </Button>
+        {isAdmin && (
+          <Button
+            component={Link}
+            to="/ingredients/new"
+            variant="contained"
+            color="primary"
+          >
+            Dodaj składnik
+          </Button>
+        )}
       </Box>
 
       <Box sx={{ mb: 3, display: "flex", gap: 2, flexWrap: "wrap" }}>
@@ -352,59 +356,43 @@ export function Ingredients() {
                   Kategoria
                 </TableSortLabel>
               </TableCell>
-              {/* {["proteins", "carbs", "fats", "calories"].map((field) => (
-                <TableCell key={field} align="right">
-                  <TableSortLabel
-                    active={sortField === field}
-                    direction={sortField === field ? sortOrder : "asc"}
-                    onClick={() => handleSort(field as SortField)}
-                  >
-                    {field.charAt(0).toUpperCase() + field.slice(1)}{" "}
-                    {field !== "calories" ? "(g)" : "(kcal)"}
-                  </TableSortLabel>
-                </TableCell>
-              ))} */}
               <TableCell align="right">
                 <TableSortLabel
                   active={sortField === "proteins"}
                   direction={sortField === "proteins" ? sortOrder : "asc"}
-                  onClick={() => handleSort("proteins" as SortField)}
+                  onClick={() => handleSort("proteins")}
                 >
                   Białko (g)
                 </TableSortLabel>
               </TableCell>
-
               <TableCell align="right">
                 <TableSortLabel
                   active={sortField === "carbs"}
                   direction={sortField === "carbs" ? sortOrder : "asc"}
-                  onClick={() => handleSort("carbs" as SortField)}
+                  onClick={() => handleSort("carbs")}
                 >
                   Węglowodany (g)
                 </TableSortLabel>
               </TableCell>
-
               <TableCell align="right">
                 <TableSortLabel
                   active={sortField === "fats"}
                   direction={sortField === "fats" ? sortOrder : "asc"}
-                  onClick={() => handleSort("fats" as SortField)}
+                  onClick={() => handleSort("fats")}
                 >
                   Tłuszcze (g)
                 </TableSortLabel>
               </TableCell>
-
               <TableCell align="right">
                 <TableSortLabel
                   active={sortField === "calories"}
                   direction={sortField === "calories" ? sortOrder : "asc"}
-                  onClick={() => handleSort("calories" as SortField)}
+                  onClick={() => handleSort("calories")}
                 >
                   Kalorie (kcal)
                 </TableSortLabel>
               </TableCell>
-
-              <TableCell align="right">Akcje</TableCell>
+              {isAdmin && <TableCell align="right">Akcje</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -432,28 +420,30 @@ export function Ingredients() {
                 <TableCell align="right">
                   {ingredient.calories.toFixed(2)}
                 </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    onClick={() => handleEditClick(ingredient)}
-                    disabled={isDeleting || isUpdating}
-                    color="primary"
-                    sx={{ mr: 1 }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(ingredient.id)}
-                    disabled={isDeleting}
-                    color="error"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+                {isAdmin && (
+                  <TableCell align="right">
+                    <IconButton
+                      onClick={() => handleEditClick(ingredient)}
+                      disabled={isDeleting || isUpdating}
+                      color="primary"
+                      sx={{ mr: 1 }}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeleteClick(ingredient.id)}
+                      disabled={isDeleting}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
             {sortedAndFilteredIngredients.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={isAdmin ? 7 : 6} align="center">
                   {searchTerm || categoryFilter
                     ? "No ingredients found matching your filters"
                     : "No ingredients found. Add some!"}

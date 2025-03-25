@@ -36,6 +36,7 @@ export function App() {
                     {/* Public Routes */}
                     <Route path="/meals" element={<Meals />} />
                     <Route path="/meals/:id" element={<MealDetails />} />
+                    <Route path="/ingredients" element={<Ingredients />} />
 
                     {/* Protected Routes */}
                     <Route
@@ -63,17 +64,9 @@ export function App() {
                       }
                     />
                     <Route
-                      path="/ingredients"
-                      element={
-                        <ProtectedRoute>
-                          <Ingredients />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
                       path="/ingredients/new"
                       element={
-                        <ProtectedRoute>
+                        <ProtectedRoute requireAdmin>
                           <AddIngredient />
                         </ProtectedRoute>
                       }
