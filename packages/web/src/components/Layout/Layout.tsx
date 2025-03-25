@@ -13,6 +13,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Tooltip,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -38,7 +39,6 @@ const publicNavItems = [
 ];
 
 const authenticatedNavItems = [
-  { text: "Moje przepisy", icon: <MenuBookIcon />, path: "/my-meals" },
   { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
   {
     text: "Sugestie posiłków",
@@ -115,11 +115,36 @@ export function Layout({ children }: LayoutProps) {
   );
 
   const authSection = user ? (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Tooltip title="Moje przepisy">
+        <IconButton
+          onClick={() => navigate("/my-meals")}
+          sx={{
+            color:
+              location.pathname === "/my-meals"
+                ? "primary.main"
+                : "text.primary",
+          }}
+        >
+          <MenuBookIcon sx={{ fontSize: 24 }} />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Dodaj przepis">
+        <IconButton
+          onClick={() => navigate("/meals/new")}
+          sx={{
+            color:
+              location.pathname === "/meals/new"
+                ? "primary.main"
+                : "text.primary",
+          }}
+        >
+          <AddIcon sx={{ fontSize: 24 }} />
+        </IconButton>
+      </Tooltip>
       <IconButton
         onClick={handleMenu}
         sx={{
-          ml: 2,
           border: "2px solid",
           borderColor: "primary.main",
         }}
@@ -153,28 +178,6 @@ export function Layout({ children }: LayoutProps) {
             <PersonIcon fontSize="small" />
           </ListItemIcon>
           {user.email}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            navigate("/my-meals");
-            handleClose();
-          }}
-        >
-          <ListItemIcon>
-            <MenuBookIcon fontSize="small" />
-          </ListItemIcon>
-          Moje przepisy
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            navigate("/meals/new");
-            handleClose();
-          }}
-        >
-          <ListItemIcon>
-            <AddIcon fontSize="small" />
-          </ListItemIcon>
-          Dodaj przepis
         </MenuItem>
         <MenuItem onClick={handleSignOut}>
           <ListItemIcon>
