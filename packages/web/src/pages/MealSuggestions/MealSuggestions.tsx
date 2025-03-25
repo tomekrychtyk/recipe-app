@@ -67,7 +67,7 @@ export function MealSuggestions() {
         className="text-center mb-8"
       >
         <h1 className="text-3xl font-bold mb-4 text-emerald-600">
-          🧪 SInteligentny Dobór Posiłków 🍳
+          🧪 Inteligentny Dobór Posiłków 🍳
         </h1>
         <motion.p
           initial={{ opacity: 0 }}
