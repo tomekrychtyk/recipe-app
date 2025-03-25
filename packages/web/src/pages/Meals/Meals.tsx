@@ -16,6 +16,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -25,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getMealCategoryName } from "@/utils/meals";
 import { useAuth } from "@/contexts/AuthContext";
+import { MEAL_CATEGORIES, type MealCategory } from "@food-recipe-app/common";
 
 export function Meals() {
   const {
@@ -36,6 +39,9 @@ export function Meals() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    MealCategory | "all"
+  >("all");
 
   const handleDeleteClick = (id: number) => {
     setDeleteConfirmId(id);
@@ -53,6 +59,11 @@ export function Meals() {
   };
 
   const formatNutrient = (value: number) => value.toFixed(1);
+
+  const filteredMeals =
+    selectedCategory === "all"
+      ? meals
+      : meals.filter((meal) => meal.categoryId === selectedCategory);
 
   if (isLoading) {
     return (
@@ -94,6 +105,25 @@ export function Meals() {
         )}
       </Box>
 
+      <Box sx={{ mb: 3 }}>
+        <TextField
+          select
+          label="Kategoria"
+          value={selectedCategory}
+          onChange={(e) =>
+            setSelectedCategory(e.target.value as MealCategory | "all")
+          }
+          sx={{ minWidth: 200 }}
+        >
+          <MenuItem value="all">Wszystkie kategorie</MenuItem>
+          {MEAL_CATEGORIES.map((category) => (
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
+
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -108,7 +138,7 @@ export function Meals() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {meals.map((meal) => (
+            {filteredMeals.map((meal) => (
               <TableRow
                 key={meal.id}
                 hover
@@ -167,10 +197,12 @@ export function Meals() {
                 </TableCell>
               </TableRow>
             ))}
-            {meals.length === 0 && (
+            {filteredMeals.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  Nie zostały dodane żadne przepisy.
+                  {selectedCategory === "all"
+                    ? "Nie zostały dodane żadne przepisy."
+                    : "Brak przepisów w wybranej kategorii."}
                 </TableCell>
               </TableRow>
             )}
