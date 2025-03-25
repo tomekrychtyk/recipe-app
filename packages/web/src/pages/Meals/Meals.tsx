@@ -19,10 +19,12 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useGetMealsQuery, useDeleteMealMutation } from "../../store/api/meals";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getMealCategoryName } from "@/utils/meals";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Meals() {
   const {
@@ -32,6 +34,7 @@ export function Meals() {
   } = useGetMealsQuery({ publicOnly: true });
   const [deleteMeal, { isLoading: isDeleting }] = useDeleteMealMutation();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
   const handleDeleteClick = (id: number) => {
@@ -80,13 +83,15 @@ export function Meals() {
         <Typography variant="h4" component="h1">
           🍽️ Przepisy
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate("/meals/new")}
-        >
-          Dodaj przepis
-        </Button>
+        {isAdmin && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/meals/new")}
+          >
+            Dodaj przepis
+          </Button>
+        )}
       </Box>
 
       <TableContainer component={Paper}>
@@ -134,20 +139,31 @@ export function Meals() {
                   {formatNutrient(meal.totalNutrients.calories)}
                 </TableCell>
                 <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-                  <IconButton
-                    onClick={() => navigate(`/meals/${meal.id}/edit`)}
-                    color="primary"
-                    sx={{ mr: 1 }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(meal.id)}
-                    disabled={isDeleting}
-                    color="error"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {isAdmin ? (
+                    <>
+                      <IconButton
+                        onClick={() => navigate(`/meals/${meal.id}/edit`)}
+                        color="primary"
+                        sx={{ mr: 1 }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteClick(meal.id)}
+                        disabled={isDeleting}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <IconButton
+                      onClick={() => navigate(`/meals/${meal.id}`)}
+                      color="primary"
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
