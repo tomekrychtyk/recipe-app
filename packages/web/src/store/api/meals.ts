@@ -7,10 +7,17 @@ import type {
 } from "@food-recipe-app/common";
 import { baseApi } from "./base";
 
+interface GetMealsParams {
+  userId?: string;
+}
+
 export const mealsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getMeals: builder.query<Meal[], void>({
-      query: () => "/meals",
+    getMeals: builder.query<Meal[], GetMealsParams | void>({
+      query: (params) => ({
+        url: "/meals",
+        params: params ? { userId: params.userId } : undefined,
+      }),
       providesTags: ["Meal"],
     }),
     getMealById: builder.query<
@@ -20,7 +27,7 @@ export const mealsApi = baseApi.injectEndpoints({
       query: (id) => `/meals/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Meal", id }],
     }),
-    addMeal: builder.mutation<Meal, MealInput>({
+    addMeal: builder.mutation<Meal, MealInput & { userId?: string }>({
       query: (meal) => ({
         url: "/meals",
         method: "POST",
@@ -36,6 +43,7 @@ export const mealsApi = baseApi.injectEndpoints({
         description?: string;
         categoryId: MealCategory;
         ingredients: MealIngredientInput[];
+        userId?: string;
       }
     >({
       query: (meal) => ({

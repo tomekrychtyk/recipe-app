@@ -26,10 +26,14 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const navItems = [
+const publicNavItems = [
   { text: "Home", icon: <HomeIcon />, path: "/" },
-  { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
   { text: "Przepisy", icon: <MenuBookIcon />, path: "/meals" },
+];
+
+const authenticatedNavItems = [
+  { text: "Moje przepisy", icon: <MenuBookIcon />, path: "/my-meals" },
+  { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
   {
     text: "Sugestie posiłków",
     path: "/meal-suggestions",
@@ -79,24 +83,28 @@ export function Layout({ children }: LayoutProps) {
         gap: 2,
       }}
     >
-      {navItems.map((item) => (
-        <Button
-          key={item.text}
-          startIcon={item.icon}
-          fullWidth={isMobile}
-          onClick={() => handleNavigation(item.path)}
-          sx={{
-            color:
-              location.pathname === item.path ? "primary.main" : "text.primary",
-            justifyContent: isMobile ? "flex-start" : "center",
-            "&:hover": {
-              color: "primary.main",
-            },
-          }}
-        >
-          {item.text}
-        </Button>
-      ))}
+      {[...publicNavItems, ...(user ? authenticatedNavItems : [])].map(
+        (item) => (
+          <Button
+            key={item.text}
+            startIcon={item.icon}
+            fullWidth={isMobile}
+            onClick={() => handleNavigation(item.path)}
+            sx={{
+              color:
+                location.pathname === item.path
+                  ? "primary.main"
+                  : "text.primary",
+              justifyContent: isMobile ? "flex-start" : "center",
+              "&:hover": {
+                color: "primary.main",
+              },
+            }}
+          >
+            {item.text}
+          </Button>
+        )
+      )}
     </Box>
   );
 

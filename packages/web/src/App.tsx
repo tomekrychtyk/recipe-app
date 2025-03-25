@@ -8,6 +8,7 @@ import { Ingredients } from "./pages/Ingredients";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { Meals, AddMeal, EditMeal, MealDetails } from "./pages/Meals";
+import { MyMeals } from "./pages/Meals/MyMeals";
 import { MealSuggestions } from "./pages/MealSuggestions/MealSuggestions";
 import { AuthProvider } from "./contexts/AuthContext";
 import { LoginPage } from "./pages/LoginPage";
@@ -31,27 +32,17 @@ export function App() {
                       path="/auth/callback"
                       element={<AuthCallbackPage />}
                     />
+
+                    {/* Public Routes */}
+                    <Route path="/meals" element={<Meals />} />
+                    <Route path="/meals/:id" element={<MealDetails />} />
+
+                    {/* Protected Routes */}
                     <Route
-                      path="/ingredients"
+                      path="/my-meals"
                       element={
                         <ProtectedRoute>
-                          <Ingredients />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/ingredients/new"
-                      element={
-                        <ProtectedRoute>
-                          <AddIngredient />
-                        </ProtectedRoute>
-                      }
-                    />
-                    <Route
-                      path="/meals"
-                      element={
-                        <ProtectedRoute>
-                          <Meals />
+                          <MyMeals />
                         </ProtectedRoute>
                       }
                     />
@@ -72,10 +63,18 @@ export function App() {
                       }
                     />
                     <Route
-                      path="/meals/:id"
+                      path="/ingredients"
                       element={
                         <ProtectedRoute>
-                          <MealDetails />
+                          <Ingredients />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/ingredients/new"
+                      element={
+                        <ProtectedRoute>
+                          <AddIngredient />
                         </ProtectedRoute>
                       }
                     />

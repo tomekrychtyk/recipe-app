@@ -15,6 +15,7 @@ type MealWithIngredients = Prisma.MealGetPayload<{
         ingredient: true;
       };
     };
+    user: true;
   };
 }>;
 
@@ -24,32 +25,39 @@ type MealIngredientWithIngredient = Prisma.MealIngredientGetPayload<{
   };
 }>;
 
-router.get("/", async (_req, res) => {
+router.get("/", async (req, res) => {
   try {
+    const { userId } = req.query;
+
     const meals = await prisma.meal.findMany({
+      where: userId
+        ? {
+            userId: userId as string,
+          }
+        : undefined,
       include: {
         ingredients: {
           include: {
             ingredient: true,
           },
         },
+        user: true,
       },
       orderBy: {
         name: "asc",
       },
     });
 
-    const mealsWithNutrients = (meals as MealWithIngredients[]).map((meal) => ({
+    const mealsWithNutrients = meals.map((meal) => ({
       id: meal.id,
       name: meal.name,
       categoryId: meal.categoryId,
       description: meal.description,
-      ingredients: meal.ingredients.map(
-        (ing: MealIngredientWithIngredient) => ({
-          ingredientId: ing.ingredientId,
-          amount: ing.amount,
-        })
-      ),
+      userId: meal.userId,
+      ingredients: meal.ingredients.map((ing) => ({
+        ingredientId: ing.ingredientId,
+        amount: ing.amount,
+      })),
       totalNutrients: calculateTotalNutrients(meal.ingredients),
     }));
 
@@ -64,7 +72,7 @@ router.get("/", async (_req, res) => {
 
 router.post("/", validateMeal, async (req, res) => {
   try {
-    const { name, description, ingredients } = req.body;
+    const { name, description, ingredients, userId } = req.body;
 
     const ingredientIds = ingredients.map(
       (i: MealIngredient) => i.ingredientId
@@ -88,6 +96,7 @@ router.post("/", validateMeal, async (req, res) => {
         name: name.trim(),
         description: description?.trim(),
         categoryId: req.body.categoryId,
+        userId,
         ingredients: {
           create: ingredients.map((ing: MealIngredient) => ({
             amount: ing.amount,
@@ -110,6 +119,7 @@ router.post("/", validateMeal, async (req, res) => {
       id: meal.id,
       name: meal.name,
       description: meal.description,
+      userId: meal.userId,
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
         amount: ing.amount,
