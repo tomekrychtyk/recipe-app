@@ -87,9 +87,9 @@ export function MealSuggestions() {
           className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-4"
         >
           <span>🥕 Wybierz składniki</span>
-          <span className="text-gray-400">→</span>
+          <span className="text-gray-400"> → </span>
           <span>📖 Znajdź przepisy</span>
-          <span className="text-gray-400">→</span>
+          <span className="text-gray-400"> → </span>
           <span>🍽️ Zacznij gotować!</span>
         </motion.div>
       </motion.div>

@@ -9,6 +9,9 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
+  Avatar,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -17,6 +20,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { FoodBank } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -35,10 +39,12 @@ const navItems = [
 
 export function Layout({ children }: LayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -49,6 +55,20 @@ export function Layout({ children }: LayoutProps) {
     if (mobileOpen) {
       handleDrawerToggle();
     }
+  };
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    handleClose();
+    navigate("/login");
   };
 
   const navigationItems = (
@@ -80,6 +100,63 @@ export function Layout({ children }: LayoutProps) {
     </Box>
   );
 
+  const authSection = user ? (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <IconButton
+        onClick={handleMenu}
+        sx={{
+          ml: 2,
+          border: "2px solid",
+          borderColor: "primary.main",
+        }}
+      >
+        <Avatar
+          sx={{
+            width: 32,
+            height: 32,
+            bgcolor: "primary.main",
+            color: "background.paper",
+          }}
+        >
+          {user.email?.[0].toUpperCase()}
+        </Avatar>
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <MenuItem disabled>{user.email}</MenuItem>
+        <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+      </Menu>
+    </Box>
+  ) : (
+    <Button
+      color="inherit"
+      onClick={() => navigate("/login")}
+      sx={{
+        ml: 2,
+        borderColor: "primary.main",
+        color: "primary.main",
+        "&:hover": {
+          borderColor: "primary.light",
+          color: "primary.light",
+        },
+      }}
+      variant="outlined"
+    >
+      Sign In
+    </Button>
+  );
+
   return (
     <Box
       sx={{
@@ -105,19 +182,26 @@ export function Layout({ children }: LayoutProps) {
           </Typography>
 
           {isMobile ? (
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ ml: "auto" }}
-            >
-              <MenuIcon />
-            </IconButton>
+            <>
+              <Box sx={{ flexGrow: 1 }} />
+              {authSection}
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ ml: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </>
           ) : (
-            <Box sx={{ flexGrow: 1, display: "flex", gap: 2 }}>
-              {navigationItems}
-            </Box>
+            <>
+              <Box sx={{ flexGrow: 1, display: "flex", gap: 2 }}>
+                {navigationItems}
+              </Box>
+              {authSection}
+            </>
           )}
         </Toolbar>
       </AppBar>
@@ -129,7 +213,7 @@ export function Layout({ children }: LayoutProps) {
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
           }}
           sx={{
             "& .MuiDrawer-paper": {

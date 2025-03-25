@@ -9,34 +9,91 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Meals, AddMeal, EditMeal, MealDetails } from "./pages/Meals";
 import { MealSuggestions } from "./pages/MealSuggestions/MealSuggestions";
+import { AuthProvider } from "./contexts/AuthContext";
+import { LoginPage } from "./pages/LoginPage";
+import { AuthCallbackPage } from "./pages/AuthCallbackPage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 export function App() {
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box sx={{ width: "100vw", minHeight: "100vh" }}>
-          <BrowserRouter>
-            <Layout>
-              <Box sx={{ width: "100%", p: 4 }}>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/ingredients" element={<Ingredients />} />
-                  <Route path="/ingredients/new" element={<AddIngredient />} />
-                  <Route path="/meals" element={<Meals />} />
-                  <Route path="/meals/new" element={<AddMeal />} />
-                  <Route path="/meals/:id/edit" element={<EditMeal />} />
-                  <Route path="/meals/:id" element={<MealDetails />} />
-                  <Route
-                    path="/meal-suggestions"
-                    element={<MealSuggestions />}
-                  />
-                </Routes>
-              </Box>
-            </Layout>
-          </BrowserRouter>
-        </Box>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box sx={{ width: "100vw", minHeight: "100vh" }}>
+            <BrowserRouter>
+              <Layout>
+                <Box sx={{ width: "100%", p: 4 }}>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route
+                      path="/auth/callback"
+                      element={<AuthCallbackPage />}
+                    />
+                    <Route
+                      path="/ingredients"
+                      element={
+                        <ProtectedRoute>
+                          <Ingredients />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/ingredients/new"
+                      element={
+                        <ProtectedRoute>
+                          <AddIngredient />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/meals"
+                      element={
+                        <ProtectedRoute>
+                          <Meals />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/meals/new"
+                      element={
+                        <ProtectedRoute>
+                          <AddMeal />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/meals/:id/edit"
+                      element={
+                        <ProtectedRoute>
+                          <EditMeal />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/meals/:id"
+                      element={
+                        <ProtectedRoute>
+                          <MealDetails />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/meal-suggestions"
+                      element={
+                        <ProtectedRoute>
+                          <MealSuggestions />
+                        </ProtectedRoute>
+                      }
+                    />
+                  </Routes>
+                </Box>
+              </Layout>
+            </BrowserRouter>
+          </Box>
+        </ThemeProvider>
+      </AuthProvider>
     </Provider>
   );
 }
