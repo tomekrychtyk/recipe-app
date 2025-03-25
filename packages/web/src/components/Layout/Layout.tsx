@@ -12,12 +12,18 @@ import {
   Avatar,
   Menu,
   MenuItem,
+  ListItemIcon,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import MenuIcon from "@mui/icons-material/Menu";
-import { FoodBank } from "@mui/icons-material";
+import {
+  FoodBank,
+  Add as AddIcon,
+  Logout as LogoutIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
@@ -142,8 +148,40 @@ export function Layout({ children }: LayoutProps) {
           horizontal: "right",
         }}
       >
-        <MenuItem disabled>{user.email}</MenuItem>
-        <MenuItem onClick={handleSignOut}>Wyloguj się</MenuItem>
+        <MenuItem disabled>
+          <ListItemIcon>
+            <PersonIcon fontSize="small" />
+          </ListItemIcon>
+          {user.email}
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/my-meals");
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            <MenuBookIcon fontSize="small" />
+          </ListItemIcon>
+          Moje przepisy
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/meals/new");
+            handleClose();
+          }}
+        >
+          <ListItemIcon>
+            <AddIcon fontSize="small" />
+          </ListItemIcon>
+          Dodaj przepis
+        </MenuItem>
+        <MenuItem onClick={handleSignOut}>
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" />
+          </ListItemIcon>
+          Wyloguj się
+        </MenuItem>
       </Menu>
     </Box>
   ) : (
