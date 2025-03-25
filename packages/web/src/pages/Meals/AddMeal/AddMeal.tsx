@@ -250,7 +250,7 @@ export function AddMeal() {
             sx={{ mb: 3 }}
           />
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-            <Button onClick={() => navigate("/meals")}>Anuluj</Button>
+            <Button onClick={() => navigate(-1)}>Anuluj</Button>
             <Button
               type="submit"
               variant="contained"
