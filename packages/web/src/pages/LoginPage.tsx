@@ -79,7 +79,7 @@ export function LoginPage() {
                 component="h1"
                 sx={{
                   mb: 1,
-                  fontSize: { xs: "2rem", sm: "2.5rem" },
+                  fontSize: { xs: "2rem", sm: "2rem" },
                   background:
                     "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
                   backgroundClip: "text",
@@ -87,7 +87,7 @@ export function LoginPage() {
                   fontWeight: "bold",
                 }}
               >
-                Welcome Back 👋
+                Witaj z powrotem 👋
               </Typography>
               <Typography
                 variant="body1"
@@ -95,7 +95,8 @@ export function LoginPage() {
                 align="center"
                 sx={{ mt: 2, mb: 3 }}
               >
-                Sign in to access your meal plans and recipes
+                Zaloguj się, aby uzyskać dostęp do swoich planów posiłków i
+                przepisów
               </Typography>
             </Box>
           </motion.div>
@@ -136,7 +137,7 @@ export function LoginPage() {
                 },
               }}
             >
-              Continue with Google
+              Zaloguj się przez Google
             </Button>
           </motion.div>
 
@@ -147,8 +148,8 @@ export function LoginPage() {
               align="center"
               sx={{ mt: 4 }}
             >
-              By signing in, you agree to our Terms of Service and Privacy
-              Policy
+              Zaloguj się, aby uzyskać dostęp do swoich planów posiłków i
+              przepisów
             </Typography>
           </motion.div>
         </Paper>

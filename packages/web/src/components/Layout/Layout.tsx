@@ -135,7 +135,7 @@ export function Layout({ children }: LayoutProps) {
         }}
       >
         <MenuItem disabled>{user.email}</MenuItem>
-        <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+        <MenuItem onClick={handleSignOut}>Wyloguj się</MenuItem>
       </Menu>
     </Box>
   ) : (
@@ -153,7 +153,7 @@ export function Layout({ children }: LayoutProps) {
       }}
       variant="outlined"
     >
-      Sign In
+      Zaloguj się
     </Button>
   );
 
