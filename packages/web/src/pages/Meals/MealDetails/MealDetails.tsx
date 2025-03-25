@@ -11,10 +11,12 @@ import { useGetMealByIdQuery } from "../../../store/api/meals";
 import { NutrientRDAGraph } from "../../../components/NutrientRDAGraph";
 import { MacroSummary } from "./MacroSummary";
 import { MealIngredients } from "./MealIngredients";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function MealDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const { data: meal, isLoading, error } = useGetMealByIdQuery(parseInt(id!));
 
   if (isLoading) {
@@ -53,13 +55,15 @@ export function MealDetails() {
             </Typography>
           )}
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<EditIcon />}
-          onClick={() => navigate(`/meals/${meal.id}/edit`)}
-        >
-          Edytuj przepis
-        </Button>
+        {isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<EditIcon />}
+            onClick={() => navigate(`/meals/${meal.id}/edit`)}
+          >
+            Edytuj przepis
+          </Button>
+        )}
       </Box>
 
       <MacroSummary meal={meal} />
