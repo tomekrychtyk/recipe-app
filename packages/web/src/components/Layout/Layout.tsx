@@ -253,7 +253,7 @@ export function Layout({ children }: LayoutProps) {
           <Typography variant="body2" color="text.secondary" align="center">
             {"Copyright © dabelo.pl "}
             {new Date().getFullYear()}
-            {" 🍽️ Made with ❤️ for food lovers"}
+            {" 🍽️ Stworzone z ❤️ dla miłośników jedzenia"}
           </Typography>
         </Container>
       </Box>
