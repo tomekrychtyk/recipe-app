@@ -14,21 +14,25 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
   Edit as EditIcon,
+  Visibility as VisibilityIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useGetMealsQuery, useDeleteMealMutation } from "../../store/api/meals";
 import { useAuth } from "../../contexts/AuthContext";
 import { useState } from "react";
 import { getMealCategoryName } from "@/utils/meals";
+import { MEAL_CATEGORIES, type MealCategory } from "@food-recipe-app/common";
 
 export function MyMeals() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const {
     data: meals = [],
     isLoading,
@@ -36,6 +40,9 @@ export function MyMeals() {
   } = useGetMealsQuery({ userId: user?.id });
   const [deleteMeal, { isLoading: isDeleting }] = useDeleteMealMutation();
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    MealCategory | "all"
+  >("all");
 
   const handleDeleteClick = (id: number) => {
     setDeleteConfirmId(id);
@@ -53,6 +60,11 @@ export function MyMeals() {
   };
 
   const formatNutrient = (value: number) => value.toFixed(1);
+
+  const filteredMeals =
+    selectedCategory === "all"
+      ? meals
+      : meals.filter((meal) => meal.categoryId === selectedCategory);
 
   if (isLoading) {
     return (
@@ -83,13 +95,34 @@ export function MyMeals() {
         <Typography variant="h4" component="h1">
           👨‍🍳 Moje przepisy
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => navigate("/meals/new")}
+        {isAdmin && (
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => navigate("/meals/new")}
+          >
+            Dodaj przepis
+          </Button>
+        )}
+      </Box>
+
+      <Box sx={{ mb: 3 }}>
+        <TextField
+          select
+          label="Kategoria"
+          value={selectedCategory}
+          onChange={(e) =>
+            setSelectedCategory(e.target.value as MealCategory | "all")
+          }
+          sx={{ minWidth: 200 }}
         >
-          Dodaj przepis
-        </Button>
+          <MenuItem value="all">Wszystkie kategorie</MenuItem>
+          {MEAL_CATEGORIES.map((category) => (
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
       </Box>
 
       <TableContainer component={Paper}>
@@ -106,7 +139,7 @@ export function MyMeals() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {meals.map((meal) => (
+            {filteredMeals.map((meal) => (
               <TableRow
                 key={meal.id}
                 hover
@@ -137,24 +170,35 @@ export function MyMeals() {
                   {formatNutrient(meal.totalNutrients.calories)}
                 </TableCell>
                 <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-                  <IconButton
-                    onClick={() => navigate(`/meals/${meal.id}/edit`)}
-                    color="primary"
-                    sx={{ mr: 1 }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteClick(meal.id)}
-                    disabled={isDeleting}
-                    color="error"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {isAdmin ? (
+                    <>
+                      <IconButton
+                        onClick={() => navigate(`/meals/${meal.id}/edit`)}
+                        color="primary"
+                        sx={{ mr: 1 }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleDeleteClick(meal.id)}
+                        disabled={isDeleting}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <IconButton
+                      onClick={() => navigate(`/meals/${meal.id}`)}
+                      color="primary"
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  )}
                 </TableCell>
               </TableRow>
             ))}
-            {meals.length === 0 && (
+            {filteredMeals.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} align="center">
                   <Box sx={{ py: 4 }}>
@@ -163,16 +207,20 @@ export function MyMeals() {
                       color="text.secondary"
                       gutterBottom
                     >
-                      Nie masz jeszcze żadnych przepisów
+                      {selectedCategory === "all"
+                        ? "Nie masz jeszcze żadnych przepisów"
+                        : "Brak przepisów w wybranej kategorii"}
                     </Typography>
-                    <Button
-                      variant="contained"
-                      startIcon={<AddIcon />}
-                      onClick={() => navigate("/meals/new")}
-                      sx={{ mt: 2 }}
-                    >
-                      Dodaj swój pierwszy przepis
-                    </Button>
+                    {isAdmin && (
+                      <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={() => navigate("/meals/new")}
+                        sx={{ mt: 2 }}
+                      >
+                        Dodaj swój pierwszy przepis
+                      </Button>
+                    )}
                   </Box>
                 </TableCell>
               </TableRow>
