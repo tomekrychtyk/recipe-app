@@ -1,12 +1,21 @@
-import { Box, Typography, Paper, Grid } from "@mui/material";
+import { Box, Typography, Paper, Grid, CircularProgress } from "@mui/material";
 import type { FoodDiaryEntryResponse } from "../types";
 import { calculateDailyNutrition } from "../utils";
 
 interface Props {
   entries: FoodDiaryEntryResponse[];
+  isLoading?: boolean;
 }
 
-export function DailyNutritionSummary({ entries }: Props) {
+export function DailyNutritionSummary({ entries, isLoading = false }: Props) {
+  if (isLoading) {
+    return (
+      <Paper sx={{ p: 2, display: "flex", justifyContent: "center" }}>
+        <CircularProgress />
+      </Paper>
+    );
+  }
+
   if (entries.length === 0) {
     return (
       <Paper sx={{ p: 2 }}>

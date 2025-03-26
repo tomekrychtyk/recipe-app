@@ -16,6 +16,7 @@ import {
   ListItemText,
   Divider,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Delete as DeleteIcon } from "@mui/icons-material";
 import type { FoodDiaryEntryResponse } from "../types";
@@ -28,9 +29,22 @@ import {
 interface Props {
   entries: FoodDiaryEntryResponse[];
   onDelete: (id: number) => void;
+  isLoading?: boolean;
 }
 
-export function TimelineEntries({ entries, onDelete }: Props) {
+export function TimelineEntries({
+  entries,
+  onDelete,
+  isLoading = false,
+}: Props) {
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   if (entries.length === 0) {
     return (
       <Box sx={{ textAlign: "center", py: 4 }}>

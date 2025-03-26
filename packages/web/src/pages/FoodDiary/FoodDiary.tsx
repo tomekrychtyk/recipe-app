@@ -72,7 +72,7 @@ export function FoodDiary() {
   const { data: ingredients = [] } = useGetIngredientsQuery();
 
   // Fetch entries for the selected date
-  const { data: entries = [] } = useGetFoodDiaryEntriesQuery({
+  const { data: entries = [], isLoading } = useGetFoodDiaryEntriesQuery({
     userId: user?.id || "",
     date: selectedDate?.toISOString().split("T")[0],
   });
@@ -176,8 +176,12 @@ export function FoodDiary() {
           </Button>
         </Box>
 
-        <DailyNutritionSummary entries={entries} />
-        <TimelineEntries entries={entries} onDelete={handleDeleteEntry} />
+        <DailyNutritionSummary entries={entries} isLoading={isLoading} />
+        <TimelineEntries
+          entries={entries}
+          onDelete={handleDeleteEntry}
+          isLoading={isLoading}
+        />
         <DetailedNutritionBreakdown entries={entries} />
 
         <Dialog
