@@ -13,6 +13,7 @@ const allowedOrigins = [
   "https://www.dabelo.pl",
 ];
 
+// deploy trigger 1
 app.use(
   cors({
     origin: function (origin, callback) {
