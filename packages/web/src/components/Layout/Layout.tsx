@@ -41,9 +41,14 @@ const publicNavItems = [
 
 const authenticatedNavItems = [
   {
-    text: "Sugestie posiłków",
-    path: "/meal-suggestions",
+    text: "Moje przepisy",
+    icon: <MenuBookIcon />,
+    path: "/my-meals",
+  },
+  {
+    text: "Dziennik posiłków",
     icon: <FoodBank />,
+    path: "/food-diary",
   },
 ];
 
