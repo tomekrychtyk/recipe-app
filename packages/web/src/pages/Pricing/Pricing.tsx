@@ -127,7 +127,7 @@ export function Pricing() {
                   variant="h6"
                   color="text.secondary"
                 >
-                  /month
+                  /miesiąc
                 </Typography>
               </Typography>
               <List>
