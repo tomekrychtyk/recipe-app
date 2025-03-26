@@ -195,6 +195,29 @@ const calculateDetailedNutrition = (
   ) as DetailedNutrition;
 };
 
+const calculateEntryNutrition = (
+  ingredients: Array<{ ingredient: Ingredient; amount: number }>
+): NutritionalSummary => {
+  const summary = ingredients.reduce(
+    (acc, ing) => {
+      const multiplier = ing.amount / 100;
+      acc.proteins += (ing.ingredient.proteins || 0) * multiplier;
+      acc.carbs += (ing.ingredient.carbs || 0) * multiplier;
+      acc.fats += (ing.ingredient.fats || 0) * multiplier;
+      acc.calories += (ing.ingredient.calories || 0) * multiplier;
+      return acc;
+    },
+    { proteins: 0, carbs: 0, fats: 0, calories: 0 }
+  );
+
+  return {
+    proteins: Math.round(summary.proteins * 10) / 10,
+    carbs: Math.round(summary.carbs * 10) / 10,
+    fats: Math.round(summary.fats * 10) / 10,
+    calories: Math.round(summary.calories),
+  };
+};
+
 export function FoodDiary() {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
@@ -442,18 +465,36 @@ export function FoodDiary() {
       </Paper>
 
       {/* Timeline of entries */}
-      <Paper sx={{ p: 3, mt: 3, mb: 3 }}>
+      <Paper sx={{ p: { xs: 1, sm: 3 }, mt: 3, mb: 3 }}>
         {entries.length === 0 ? (
           <Typography variant="body1" color="text.secondary" align="center">
             Brak wpisów na wybrany dzień
           </Typography>
         ) : (
-          <Timeline>
+          <Timeline
+            sx={{
+              [`& .MuiTimelineContent-root`]: {
+                flex: 4,
+              },
+              [`& .MuiTimelineItem-root`]: {
+                minHeight: "auto",
+              },
+              [`& .MuiTimelineOppositeContent-root`]: {
+                flex: 1,
+                maxWidth: { xs: 50, sm: 100 },
+              },
+              p: 0,
+              m: 0,
+            }}
+          >
             {sortEntriesByTime(entries).map((entry) => (
               <TimelineItem key={entry.id}>
                 <TimelineOppositeContent
                   color="text.secondary"
-                  sx={{ minWidth: 100 }}
+                  sx={{
+                    minWidth: { xs: 50, sm: 100 },
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  }}
                 >
                   {formatTime(entry.time)}
                 </TimelineOppositeContent>
@@ -462,7 +503,7 @@ export function FoodDiary() {
                   <TimelineConnector />
                 </TimelineSeparator>
                 <TimelineContent>
-                  <Paper elevation={1} sx={{ p: 2 }}>
+                  <Paper elevation={1} sx={{ p: { xs: 1, sm: 2 } }}>
                     <Box
                       sx={{
                         display: "flex",
@@ -470,7 +511,15 @@ export function FoodDiary() {
                         alignItems: "flex-start",
                       }}
                     >
-                      <Typography variant="h6" component="h3">
+                      <Typography
+                        variant="h6"
+                        component="h3"
+                        sx={{
+                          fontSize: { xs: "1rem", sm: "1.25rem" },
+                          wordBreak: "break-word",
+                          pr: 1,
+                        }}
+                      >
                         {entry.name}
                       </Typography>
                       <IconButton
@@ -488,21 +537,84 @@ export function FoodDiary() {
                             bgcolor: "error.light",
                             color: "error.dark",
                           },
+                          flexShrink: 0,
                         }}
                       >
                         <DeleteIcon />
                       </IconButton>
                     </Box>
-                    <List dense>
+                    <List dense sx={{ py: 0 }}>
                       {entry.ingredients.map((ing) => (
-                        <ListItem key={ing.ingredientId}>
+                        <ListItem
+                          key={ing.ingredientId}
+                          sx={{ px: { xs: 0, sm: 2 } }}
+                        >
                           <ListItemText
                             primary={ing.ingredient.name}
                             secondary={`${ing.amount}g`}
+                            primaryTypographyProps={{
+                              sx: {
+                                fontSize: { xs: "0.875rem", sm: "1rem" },
+                                wordBreak: "break-word",
+                              },
+                            }}
+                            secondaryTypographyProps={{
+                              sx: {
+                                fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                              },
+                            }}
                           />
                         </ListItem>
                       ))}
                     </List>
+                    {/* Add macronutrient summary */}
+                    {(() => {
+                      const nutrition = calculateEntryNutrition(
+                        entry.ingredients
+                      );
+                      return (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: { xs: 1, sm: 2 },
+                            mt: 1,
+                            pt: 1,
+                            borderTop: 1,
+                            borderColor: "divider",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
+                            {nutrition.calories} kcal
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
+                            B: {nutrition.proteins}g
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
+                            W: {nutrition.carbs}g
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
+                            T: {nutrition.fats}g
+                          </Typography>
+                        </Box>
+                      );
+                    })()}
                   </Paper>
                 </TimelineContent>
               </TimelineItem>
