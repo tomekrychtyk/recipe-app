@@ -18,6 +18,15 @@ import {
   ListItemText,
   ListItemSecondaryAction,
 } from "@mui/material";
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineOppositeContent,
+} from "@mui/lab";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -26,7 +35,11 @@ import { useGetMealsQuery } from "@/store/api/meals";
 import { useGetIngredientsQuery } from "@/store/api/ingredients";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Ingredient, Meal } from "@food-recipe-app/common";
-import { useAddFoodDiaryEntryMutation } from "@/store/api/foodDiary";
+import {
+  useAddFoodDiaryEntryMutation,
+  useGetFoodDiaryEntriesQuery,
+} from "@/store/api/foodDiary";
+import { format } from "date-fns";
 
 type EntryType = "ingredients" | "public_meals" | "my_meals";
 
@@ -42,6 +55,32 @@ interface FoodDiaryEntry {
   selectedMeal: Meal | null;
   ingredients: IngredientWithQuantity[];
 }
+
+interface FoodDiaryEntryResponse {
+  id: number;
+  date: string;
+  time: string;
+  name: string;
+  ingredients: Array<{
+    ingredientId: number;
+    ingredient: Ingredient;
+    amount: number;
+  }>;
+}
+
+const formatTime = (timeString: string) => {
+  // PostgreSQL returns time as "HH:mm:ss.ms+00"
+  const match = timeString.match(/(\d{2}):(\d{2})/);
+  if (match) {
+    const [, hours, minutes] = match;
+    return `${hours}:${minutes}`;
+  }
+  return timeString;
+};
+
+const sortEntriesByTime = (entries: FoodDiaryEntryResponse[]) => {
+  return [...entries].sort((a, b) => a.time.localeCompare(b.time));
+};
 
 export function FoodDiary() {
   const { user } = useAuth();
@@ -64,6 +103,12 @@ export function FoodDiary() {
   const { data: allMeals = [] } = useGetMealsQuery({});
   const { data: myMeals = [] } = useGetMealsQuery({ userId: user?.id });
   const { data: ingredients = [] } = useGetIngredientsQuery();
+
+  // Fetch entries for the selected date
+  const { data: entries = [] } = useGetFoodDiaryEntriesQuery({
+    userId: user?.id || "",
+    date: selectedDate?.toISOString().split("T")[0],
+  });
 
   const handleAddEntry = () => {
     setIsAddEntryDialogOpen(true);
@@ -213,6 +258,49 @@ export function FoodDiary() {
             Dodaj posiłek
           </Button>
         </Box>
+      </Paper>
+
+      {/* Timeline of entries */}
+      <Paper sx={{ p: 3, mt: 3 }}>
+        {entries.length === 0 ? (
+          <Typography variant="body1" color="text.secondary" align="center">
+            Brak wpisów na wybrany dzień
+          </Typography>
+        ) : (
+          <Timeline>
+            {sortEntriesByTime(entries).map((entry) => (
+              <TimelineItem key={entry.id}>
+                <TimelineOppositeContent
+                  color="text.secondary"
+                  sx={{ minWidth: 100 }}
+                >
+                  {formatTime(entry.time)}
+                </TimelineOppositeContent>
+                <TimelineSeparator>
+                  <TimelineDot color="primary" />
+                  <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent>
+                  <Paper elevation={1} sx={{ p: 2 }}>
+                    <Typography variant="h6" component="h3">
+                      {entry.name}
+                    </Typography>
+                    <List dense>
+                      {entry.ingredients.map((ing) => (
+                        <ListItem key={ing.ingredientId}>
+                          <ListItemText
+                            primary={ing.ingredient.name}
+                            secondary={`${ing.amount}g`}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Paper>
+                </TimelineContent>
+              </TimelineItem>
+            ))}
+          </Timeline>
+        )}
       </Paper>
 
       {/* Add Entry Dialog */}
