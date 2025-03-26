@@ -4,8 +4,11 @@ import type { Meal, MealIngredient, Ingredient } from "@prisma/client";
 import { validateMeal } from "../utils/validators";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { calculateTotalNutrients } from "../utils/calculations";
+import multer from "multer";
+import { uploadFile } from "../services/s3";
 
 const router = Router();
+const upload = multer();
 const prisma = new PrismaClient();
 
 type MealWithIngredients = Prisma.MealGetPayload<{
@@ -307,6 +310,20 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({
       errors: ["Internal server error occurred while fetching meal"],
     });
+  }
+});
+
+router.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file provided" });
+    }
+
+    const url = await uploadFile(req.file.buffer, req.file.mimetype);
+    res.json({ url });
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    res.status(500).json({ error: "Failed to upload file" });
   }
 });
 

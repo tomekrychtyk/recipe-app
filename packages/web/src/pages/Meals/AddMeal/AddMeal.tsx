@@ -17,13 +17,30 @@ import {
   MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useState } from "react";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAddMealMutation } from "@/store/api/meals";
+import {
+  useAddMealMutation,
+  useUploadMealImageMutation,
+} from "@/store/api/meals";
 import { useGetIngredientsQuery } from "@/store/api/ingredients";
 import type { Ingredient, MealCategory } from "@food-recipe-app/common";
 import { MEAL_CATEGORIES } from "@food-recipe-app/common";
 import { useAuth } from "@/contexts/AuthContext";
+import { styled } from "@mui/material/styles";
+
+const VisuallyHiddenInput = styled("input")`
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  white-space: nowrap;
+  width: 1px;
+`;
 
 interface SelectedIngredient {
   ingredient: Ingredient;
@@ -34,8 +51,8 @@ export function AddMeal() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [addMeal, { isLoading, error }] = useAddMealMutation();
+  const [uploadMealImage] = useUploadMealImageMutation();
   const { data: ingredients = [] } = useGetIngredientsQuery();
-
   const [categoryId, setCategoryId] = useState<MealCategory>(
     MEAL_CATEGORIES[0].id
   );
@@ -48,6 +65,9 @@ export function AddMeal() {
     null
   );
   const [currentAmount, setCurrentAmount] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddIngredient = () => {
     if (currentIngredient && currentAmount && Number(currentAmount) > 0) {
@@ -79,6 +99,26 @@ export function AddMeal() {
     );
   };
 
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await uploadMealImage(formData).unwrap();
+      setThumbnailUrl(response.url);
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedIngredients.length === 0) {
@@ -96,6 +136,7 @@ export function AddMeal() {
         })),
         categoryId,
         userId: user?.id,
+        thumbnailUrl,
       }).unwrap();
 
       navigate("/my-meals");
@@ -120,6 +161,37 @@ export function AddMeal() {
         )}
 
         <form onSubmit={handleSubmit}>
+          <Box sx={{ mb: 3 }}>
+            <Button
+              component="label"
+              variant="outlined"
+              startIcon={<CloudUploadIcon />}
+              disabled={isUploading}
+              sx={{ mb: 2 }}
+            >
+              {isUploading ? "Uploading..." : "Upload Thumbnail"}
+              <VisuallyHiddenInput
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                ref={fileInputRef}
+              />
+            </Button>
+            {thumbnailUrl && (
+              <Box sx={{ mt: 2, textAlign: "center" }}>
+                <img
+                  src={thumbnailUrl}
+                  alt="Meal thumbnail"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "200px",
+                    objectFit: "cover",
+                  }}
+                />
+              </Box>
+            )}
+          </Box>
+
           <TextField
             fullWidth
             label="Nazwa przepisu"

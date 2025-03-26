@@ -33,7 +33,7 @@ export const mealsApi = baseApi.injectEndpoints({
       query: (id) => `/meals/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Meal", id }],
     }),
-    addMeal: builder.mutation<Meal, MealInput & { userId?: string }>({
+    addMeal: builder.mutation<Meal, MealInput>({
       query: (meal) => ({
         url: "/meals",
         method: "POST",
@@ -66,6 +66,13 @@ export const mealsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Meal"],
     }),
+    uploadMealImage: builder.mutation<{ url: string }, FormData>({
+      query: (formData) => ({
+        url: "meals/upload",
+        method: "POST",
+        body: formData,
+      }),
+    }),
   }),
 });
 
@@ -75,4 +82,5 @@ export const {
   useAddMealMutation,
   useUpdateMealMutation,
   useDeleteMealMutation,
+  useUploadMealImageMutation,
 } = mealsApi;

@@ -108,6 +108,7 @@ export interface MealInput {
   ingredients: MealIngredientInput[];
   categoryId: MealCategory;
   userId?: string;
+  thumbnailUrl?: string;
 }
 
 export interface NutrientsState {
