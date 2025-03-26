@@ -17,6 +17,7 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Grid,
 } from "@mui/material";
 import {
   Timeline,
@@ -69,6 +70,13 @@ interface FoodDiaryEntryResponse {
   }>;
 }
 
+interface NutritionalSummary {
+  proteins: number;
+  carbs: number;
+  fats: number;
+  calories: number;
+}
+
 const formatTime = (timeString: string) => {
   // PostgreSQL returns time as "HH:mm:ss.ms+00"
   const match = timeString.match(/(\d{2}):(\d{2})/);
@@ -81,6 +89,38 @@ const formatTime = (timeString: string) => {
 
 const sortEntriesByTime = (entries: FoodDiaryEntryResponse[]) => {
   return [...entries].sort((a, b) => a.time.localeCompare(b.time));
+};
+
+const calculateDailyNutrition = (
+  entries: FoodDiaryEntryResponse[]
+): NutritionalSummary => {
+  const summary = entries.reduce(
+    (acc, entry) => {
+      entry.ingredients.forEach((ing) => {
+        // Calculate nutrition based on amount (converting from 100g base)
+        const multiplier = ing.amount / 100;
+        acc.proteins += (ing.ingredient.proteins || 0) * multiplier;
+        acc.carbs += (ing.ingredient.carbs || 0) * multiplier;
+        acc.fats += (ing.ingredient.fats || 0) * multiplier;
+        acc.calories += (ing.ingredient.calories || 0) * multiplier;
+      });
+      return acc;
+    },
+    {
+      proteins: 0,
+      carbs: 0,
+      fats: 0,
+      calories: 0,
+    }
+  );
+
+  // Round to 1 decimal place
+  return {
+    proteins: Math.round(summary.proteins * 10) / 10,
+    carbs: Math.round(summary.carbs * 10) / 10,
+    fats: Math.round(summary.fats * 10) / 10,
+    calories: Math.round(summary.calories),
+  };
 };
 
 export function FoodDiary() {
@@ -242,6 +282,73 @@ export function FoodDiary() {
           }}
         />
       </Box>
+
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <Typography variant="h6" gutterBottom>
+              Podsumowanie dnia
+            </Typography>
+          </Grid>
+          {entries.length === 0 ? (
+            <Grid item xs={12}>
+              <Typography variant="body1" color="text.secondary" align="center">
+                Brak wpisów na wybrany dzień
+              </Typography>
+            </Grid>
+          ) : (
+            <>
+              {(() => {
+                const summary = calculateDailyNutrition(entries);
+                return (
+                  <>
+                    <Grid item xs={6} sm={3}>
+                      <Box sx={{ textAlign: "center" }}>
+                        <Typography variant="h4" color="primary">
+                          {summary.calories}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Kalorie (kcal)
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <Box sx={{ textAlign: "center" }}>
+                        <Typography variant="h4" color="primary">
+                          {summary.proteins}g
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Białko
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <Box sx={{ textAlign: "center" }}>
+                        <Typography variant="h4" color="primary">
+                          {summary.carbs}g
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Węglowodany
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <Box sx={{ textAlign: "center" }}>
+                        <Typography variant="h4" color="primary">
+                          {summary.fats}g
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Tłuszcze
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </>
+                );
+              })()}
+            </>
+          )}
+        </Grid>
+      </Paper>
 
       <Paper sx={{ p: 2, mb: 3 }}>
         <Box
