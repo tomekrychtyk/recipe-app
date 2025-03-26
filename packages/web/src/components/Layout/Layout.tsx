@@ -37,7 +37,7 @@ interface LayoutProps {
 const menuItems = [
   { text: "Home", path: "/", icon: <HomeIcon /> },
   { text: "Przepisy", path: "/meals", icon: <RestaurantIcon /> },
-  { text: "Plan", path: "/pricing", icon: <PaymentsIcon /> },
+  { text: "Wybierz plan", path: "/pricing", icon: <PaymentsIcon /> },
 ];
 
 export function Layout({ children }: LayoutProps) {
