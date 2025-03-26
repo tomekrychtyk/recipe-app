@@ -14,6 +14,7 @@ model User {
   role       Role     @default(user)
   created_at DateTime @default(now()) @db.Timestamptz
   meals      Meal[]
+  diaryEntries FoodDiaryEntry[]
 
   @@map("users")
 }
@@ -64,7 +65,8 @@ model Ingredient {
   molybdenum  Float?  // mcg
   iodine      Float?  // mcg
 
-  meals MealIngredient[]
+  meals                MealIngredient[]
+  foodDiaryIngredients FoodDiaryIngredient[]
 }
 
 model Meal {
@@ -73,10 +75,11 @@ model Meal {
   categoryId  String
   description String?
   ingredients MealIngredient[]
+  diaryEntries  FoodDiaryEntry[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   userId      String?          @db.Uuid
-  user        User?           @relation(fields: [userId], references: [id])
+  user        User?            @relation(fields: [userId], references: [id])
 }
 
 model MealIngredient {
@@ -88,4 +91,31 @@ model MealIngredient {
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+}
+
+model FoodDiaryEntry {
+  id          Int                   @id @default(autoincrement())
+  userId      String                @db.Uuid
+  date        DateTime              @db.Date
+  time        DateTime              @db.Time
+  name        String
+  mealId      Int?
+  meal        Meal?                 @relation(fields: [mealId], references: [id])
+  ingredients FoodDiaryIngredient[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  user        User                  @relation(fields: [userId], references: [id])
+
+  @@map("food_diary_entries")
+}
+
+model FoodDiaryIngredient {
+  id        Int             @id @default(autoincrement())
+  entryId   Int
+  entry     FoodDiaryEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  ingredientId Int
+  ingredient   Ingredient     @relation(fields: [ingredientId], references: [id])
+  amount       Float
+
+  @@map("food_diary_ingredients")
 }

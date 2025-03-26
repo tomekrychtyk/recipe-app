@@ -1,4 +1,4 @@
-import type { FoodCategory, MealCategory } from "./constants/categories";
+import type { MealCategory } from "./constants/categories";
 
 export interface Ingredient {
   id: number;
@@ -195,3 +195,34 @@ export type NutrientsAction =
       value: number | null;
     }
   | { type: "RESET" };
+
+export interface FoodDiaryIngredient {
+  ingredientId: number;
+  ingredient: Ingredient;
+  amount: number;
+}
+
+export interface FoodDiaryEntry {
+  id: number;
+  userId: string;
+  date: string;
+  time: string;
+  name: string;
+  mealId?: number;
+  meal?: Meal;
+  ingredients: FoodDiaryIngredient[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFoodDiaryEntryInput {
+  userId: string;
+  date: string;
+  time: string;
+  name: string;
+  mealId?: number;
+  ingredients: Array<{
+    ingredientId: number;
+    amount: number;
+  }>;
+}

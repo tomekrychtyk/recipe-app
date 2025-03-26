@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
 import ingredientRoutes from "./routes/ingredients";
 import mealRoutes from "./routes/meals";
+import foodDiaryRoutes from "./routes/foodDiary";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/meals", mealRoutes);
+app.use("/api/food-diary", foodDiaryRoutes);
 
 const PORT = process.env.PORT || 4000;
 

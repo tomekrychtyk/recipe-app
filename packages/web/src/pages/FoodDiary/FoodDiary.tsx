@@ -22,10 +22,11 @@ import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { useGetMealsQuery } from "../../store/api/meals";
-import { useGetIngredientsQuery } from "../../store/api/ingredients";
-import { useAuth } from "../../contexts/AuthContext";
+import { useGetMealsQuery } from "@/store/api/meals";
+import { useGetIngredientsQuery } from "@/store/api/ingredients";
+import { useAuth } from "@/contexts/AuthContext";
 import type { Ingredient, Meal } from "@food-recipe-app/common";
+import { useAddFoodDiaryEntryMutation } from "@/store/api/foodDiary";
 
 type EntryType = "ingredients" | "public_meals" | "my_meals";
 
@@ -57,6 +58,7 @@ export function FoodDiary() {
     selectedMeal: null,
     ingredients: [],
   });
+  const [addFoodDiaryEntry] = useAddFoodDiaryEntryMutation();
 
   // Fetch data for dropdowns
   const { data: allMeals = [] } = useGetMealsQuery({});
@@ -74,10 +76,27 @@ export function FoodDiary() {
     });
   };
 
-  const handleSaveEntry = () => {
-    // TODO: Implement saving to backend
-    console.log("Saving entry:", { date: selectedDate, ...entryData });
-    setIsAddEntryDialogOpen(false);
+  const handleSaveEntry = async () => {
+    if (!selectedDate || !entryData.time || !user?.id) return;
+
+    try {
+      await addFoodDiaryEntry({
+        userId: user.id,
+        date: selectedDate.toISOString().split("T")[0],
+        time: entryData.time.toTimeString().split(" ")[0],
+        name: entryData.name,
+        mealId: entryData.selectedMeal?.id,
+        ingredients: entryData.ingredients.map((ing) => ({
+          ingredientId: ing.ingredient.id,
+          amount: ing.amount,
+        })),
+      }).unwrap();
+
+      setIsAddEntryDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to save food diary entry:", error);
+      // TODO: Show error message to user
+    }
   };
 
   const handleAddIngredient = () => {
