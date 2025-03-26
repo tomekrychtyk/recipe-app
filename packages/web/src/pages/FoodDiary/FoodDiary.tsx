@@ -38,6 +38,7 @@ import type { Ingredient, Meal } from "@food-recipe-app/common";
 import {
   useAddFoodDiaryEntryMutation,
   useGetFoodDiaryEntriesQuery,
+  useDeleteFoodDiaryEntryMutation,
 } from "@/store/api/foodDiary";
 import { format } from "date-fns";
 
@@ -98,6 +99,7 @@ export function FoodDiary() {
     ingredients: [],
   });
   const [addFoodDiaryEntry] = useAddFoodDiaryEntryMutation();
+  const [deleteFoodDiaryEntry] = useDeleteFoodDiaryEntryMutation();
 
   // Fetch data for dropdowns
   const { data: allMeals = [] } = useGetMealsQuery({});
@@ -282,9 +284,36 @@ export function FoodDiary() {
                 </TimelineSeparator>
                 <TimelineContent>
                   <Paper elevation={1} sx={{ p: 2 }}>
-                    <Typography variant="h6" component="h3">
-                      {entry.name}
-                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Typography variant="h6" component="h3">
+                        {entry.name}
+                      </Typography>
+                      <IconButton
+                        size="small"
+                        onClick={async () => {
+                          try {
+                            await deleteFoodDiaryEntry(entry.id).unwrap();
+                          } catch (error) {
+                            console.error("Failed to delete entry:", error);
+                          }
+                        }}
+                        sx={{
+                          color: "error.main",
+                          "&:hover": {
+                            bgcolor: "error.light",
+                            color: "error.dark",
+                          },
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                     <List dense>
                       {entry.ingredients.map((ing) => (
                         <ListItem key={ing.ingredientId}>
