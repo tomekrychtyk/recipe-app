@@ -100,7 +100,7 @@ jobs:
           # Create .env file
           echo "DATABASE_URL=\"${DATABASE_URL}\"" > deploy/packages/server/.env
           echo "DIRECT_URL=\"${DIRECT_URL}\"" >> deploy/packages/server/.env
-          echo "SUPABASE_URL=\"${SUPABASE_URL}\"" > deploy/packages/server/.env
+          echo "SUPABASE_URL=\"${SUPABASE_URL}\"" >> deploy/packages/server/.env
           echo "SUPABASE_SERVICE_ROLE_KEY=\"${SUPABASE_SERVICE_ROLE_KEY}\"" >> deploy/packages/server/.env
 
           # Create deployment archive
