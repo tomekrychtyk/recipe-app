@@ -39,19 +39,6 @@ const publicNavItems = [
   { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
 ];
 
-const authenticatedNavItems = [
-  {
-    text: "Moje przepisy",
-    icon: <MenuBookIcon />,
-    path: "/my-meals",
-  },
-  {
-    text: "Dziennik posiłków",
-    icon: <FoodBank />,
-    path: "/food-diary",
-  },
-];
-
 export function Layout({ children }: LayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -94,33 +81,42 @@ export function Layout({ children }: LayoutProps) {
         gap: 2,
       }}
     >
-      {[...publicNavItems, ...(user ? authenticatedNavItems : [])].map(
-        (item) => (
-          <Button
-            key={item.text}
-            startIcon={item.icon}
-            fullWidth={isMobile}
-            onClick={() => handleNavigation(item.path)}
-            sx={{
-              color:
-                location.pathname === item.path
-                  ? "primary.main"
-                  : "text.primary",
-              justifyContent: isMobile ? "flex-start" : "center",
-              "&:hover": {
-                color: "primary.main",
-              },
-            }}
-          >
-            {item.text}
-          </Button>
-        )
-      )}
+      {[...publicNavItems].map((item) => (
+        <Button
+          key={item.text}
+          startIcon={item.icon}
+          fullWidth={isMobile}
+          onClick={() => handleNavigation(item.path)}
+          sx={{
+            color:
+              location.pathname === item.path ? "primary.main" : "text.primary",
+            justifyContent: isMobile ? "flex-start" : "center",
+            "&:hover": {
+              color: "primary.main",
+            },
+          }}
+        >
+          {item.text}
+        </Button>
+      ))}
     </Box>
   );
 
   const authSection = user ? (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Tooltip title="Dziennik posiłków">
+        <IconButton
+          onClick={() => navigate("/food-diary")}
+          sx={{
+            color:
+              location.pathname === "/food-diary"
+                ? "primary.main"
+                : "text.primary",
+          }}
+        >
+          <FoodBank sx={{ fontSize: 24 }} />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Moje przepisy">
         <IconButton
           onClick={() => navigate("/my-meals")}
