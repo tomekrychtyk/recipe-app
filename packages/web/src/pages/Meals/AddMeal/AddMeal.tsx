@@ -175,7 +175,7 @@ export function AddMeal() {
               disabled={isUploading}
               sx={{ mb: 2 }}
             >
-              {isUploading ? "Uploading..." : "Upload Thumbnail"}
+              {isUploading ? "Uploading..." : "Dodaj zdjęcie"}
               <VisuallyHiddenInput
                 type="file"
                 accept="image/*"

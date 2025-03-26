@@ -32,6 +32,7 @@ import {
   type MealCategory,
   type Meal,
 } from "@food-recipe-app/common";
+import { MealThumbnail } from "@/components/MealThumbnail/MealThumbnail";
 
 export function MyMeals() {
   const { user } = useAuth();
@@ -136,18 +137,10 @@ export function MyMeals() {
               {filteredMeals.map((meal) => (
                 <TableRow key={meal.id}>
                   <TableCell>
-                    {meal.thumbnailUrl && (
-                      <img
-                        src={meal.thumbnailUrl}
-                        alt={meal.name}
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          objectFit: "cover",
-                          borderRadius: "4px",
-                        }}
-                      />
-                    )}
+                    <MealThumbnail
+                      thumbnailUrl={meal.thumbnailUrl}
+                      alt={meal.name}
+                    />
                   </TableCell>
                   <TableCell>{meal.name}</TableCell>
                   <TableCell>{getMealCategoryName(meal.categoryId)}</TableCell>

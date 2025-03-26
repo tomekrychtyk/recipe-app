@@ -16,22 +16,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-  MenuItem,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useGetMealsQuery, useDeleteMealMutation } from "../../store/api/meals";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getMealCategoryName } from "@/utils/meals";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  MEAL_CATEGORIES,
-  type MealCategory,
-  type Meal,
-} from "@food-recipe-app/common";
+import { type MealCategory } from "@food-recipe-app/common";
+import { MealThumbnail } from "@/components/MealThumbnail/MealThumbnail";
 
 export function Meals() {
   const {
@@ -43,9 +37,7 @@ export function Meals() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<
-    MealCategory | "all"
-  >("all");
+  const [selectedCategory] = useState<MealCategory | "all">("all");
 
   const handleDeleteClick = (id: number) => {
     setDeleteConfirmId(id);
@@ -110,18 +102,10 @@ export function Meals() {
               {filteredMeals.map((meal) => (
                 <TableRow key={meal.id}>
                   <TableCell>
-                    {meal.thumbnailUrl && (
-                      <img
-                        src={meal.thumbnailUrl}
-                        alt={meal.name}
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                          objectFit: "cover",
-                          borderRadius: "4px",
-                        }}
-                      />
-                    )}
+                    <MealThumbnail
+                      thumbnailUrl={meal.thumbnailUrl}
+                      alt={meal.name}
+                    />
                   </TableCell>
                   <TableCell>{meal.name}</TableCell>
                   <TableCell>{getMealCategoryName(meal.categoryId)}</TableCell>
@@ -140,12 +124,39 @@ export function Meals() {
                     >
                       <VisibilityIcon />
                     </IconButton>
+                    {isAdmin && (
+                      <IconButton
+                        onClick={() => handleDeleteClick(meal.id)}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Dialog
+          open={deleteConfirmId !== null}
+          onClose={() => setDeleteConfirmId(null)}
+        >
+          <DialogTitle>Potwierdzenie usunięcia</DialogTitle>
+          <DialogContent>Czy na pewno chcesz usunąć ten posiłek?</DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteConfirmId(null)}>Anuluj</Button>
+            <Button
+              onClick={handleDeleteConfirm}
+              color="error"
+              variant="contained"
+              disabled={isDeleting}
+            >
+              Usuń
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Paper>
     </Box>
   );

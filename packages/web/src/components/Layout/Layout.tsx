@@ -38,6 +38,11 @@ const menuItems = [
   { text: "Home", path: "/", icon: <HomeIcon /> },
   { text: "Przepisy", path: "/meals", icon: <RestaurantIcon /> },
   { text: "Wybierz plan", path: "/pricing", icon: <PaymentsIcon /> },
+  {
+    text: "Sugeruj posiłek",
+    path: "/meal-suggestions",
+    icon: <RestaurantIcon />,
+  },
 ];
 
 export function Layout({ children }: LayoutProps) {
