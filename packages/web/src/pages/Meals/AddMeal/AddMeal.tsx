@@ -15,6 +15,9 @@ import {
   TableHead,
   TableRow,
   MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -47,9 +50,11 @@ interface SelectedIngredient {
   amount: number;
 }
 
+type MealVisibility = "public" | "private";
+
 export function AddMeal() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [addMeal, { isLoading, error }] = useAddMealMutation();
   const [uploadMealImage] = useUploadMealImageMutation();
   const { data: ingredients = [] } = useGetIngredientsQuery();
@@ -67,6 +72,7 @@ export function AddMeal() {
   const [currentAmount, setCurrentAmount] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const [visibility, setVisibility] = useState<MealVisibility>("private");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAddIngredient = () => {
@@ -135,11 +141,11 @@ export function AddMeal() {
           amount,
         })),
         categoryId,
-        userId: user?.id,
+        userId: visibility === "private" ? user?.id : undefined,
         thumbnailUrl,
       }).unwrap();
 
-      navigate("/my-meals");
+      navigate(visibility === "public" ? "/meals" : "/my-meals");
     } catch (error) {
       console.error("Failed to create meal:", error);
     }
@@ -243,6 +249,21 @@ export function AddMeal() {
                 </MenuItem>
               ))}
             </TextField>
+            {isAdmin && (
+              <FormControl fullWidth>
+                <InputLabel>Widoczność</InputLabel>
+                <Select
+                  value={visibility}
+                  label="Widoczność"
+                  onChange={(e) =>
+                    setVisibility(e.target.value as MealVisibility)
+                  }
+                >
+                  <MenuItem value="private">Prywatny</MenuItem>
+                  <MenuItem value="public">Publiczny</MenuItem>
+                </Select>
+              </FormControl>
+            )}
           </Box>
 
           {selectedIngredients.length > 0 && (
