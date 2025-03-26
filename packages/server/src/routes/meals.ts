@@ -64,9 +64,17 @@ router.get("/", async (req, res) => {
 
     res.json(mealsWithNutrients);
   } catch (error) {
-    console.error("Failed to fetch meals:", error);
+    console.error("Failed to fetch meals. Full error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    if (error && typeof error === "object" && "code" in error) {
+      console.error("Prisma error code:", error.code);
+    }
     res.status(500).json({
       errors: ["Internal server error occurred while fetching meals"],
+      details: process.env.NODE_ENV === "development" ? error : undefined,
     });
   }
 });
