@@ -1,5 +1,7 @@
-import { Box, Typography, keyframes } from "@mui/material";
+import { Box, Typography, Button, keyframes } from "@mui/material";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { Payments as PaymentsIcon } from "@mui/icons-material";
 
 const float = keyframes`
   0% { transform: translateY(0px); }
@@ -27,6 +29,8 @@ const staggerAnimation = {
 };
 
 export function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -127,6 +131,39 @@ export function HomePage() {
             <li>💪 Osiągaj cele żywieniowe</li>
           </ul>
         </Typography>
+      </motion.div>
+
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={staggerAnimation}
+        custom={4}
+      >
+        <Button
+          variant="contained"
+          size="large"
+          onClick={() => navigate("/pricing")}
+          startIcon={<PaymentsIcon />}
+          sx={{
+            mt: 4,
+            py: 2,
+            px: 6,
+            fontSize: "1.2rem",
+            borderRadius: 2,
+            background: "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
+            color: "#1c1c1c",
+            fontWeight: "bold",
+            textTransform: "none",
+            boxShadow: "0 4px 20px rgba(255, 215, 0, 0.25)",
+            transition: "all 0.3s ease-in-out",
+            "&:hover": {
+              transform: "translateY(-2px)",
+              boxShadow: "0 6px 25px rgba(255, 215, 0, 0.35)",
+            },
+          }}
+        >
+          Już dziś zacznij zdrowo żyć!
+        </Button>
       </motion.div>
     </Box>
   );
