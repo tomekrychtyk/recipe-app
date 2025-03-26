@@ -1,0 +1,155 @@
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineOppositeContent,
+} from "@mui/lab";
+import {
+  Box,
+  Typography,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  IconButton,
+} from "@mui/material";
+import { Delete as DeleteIcon } from "@mui/icons-material";
+import type { FoodDiaryEntryResponse } from "../types";
+import {
+  formatTime,
+  calculateEntryNutrition,
+  sortEntriesByTime,
+} from "../utils";
+
+interface Props {
+  entries: FoodDiaryEntryResponse[];
+  onDelete: (id: number) => void;
+}
+
+export function TimelineEntries({ entries, onDelete }: Props) {
+  if (entries.length === 0) {
+    return (
+      <Box sx={{ textAlign: "center", py: 4 }}>
+        <Typography variant="body1" color="text.secondary">
+          Brak wpisów na ten dzień
+        </Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Timeline
+      sx={{
+        p: 0,
+        "& .MuiTimelineItem-root:before": {
+          flex: 0,
+          p: 0,
+        },
+      }}
+    >
+      {sortEntriesByTime(entries).map((entry) => {
+        const nutrition = calculateEntryNutrition(entry.ingredients);
+        return (
+          <TimelineItem key={entry.id}>
+            <TimelineOppositeContent
+              sx={{
+                flex: "0 0 50px",
+                py: 1.5,
+                "@media (max-width: 600px)": {
+                  flex: "0 0 40px",
+                },
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                {formatTime(entry.time)}
+              </Typography>
+            </TimelineOppositeContent>
+            <TimelineSeparator>
+              <TimelineDot color="primary" />
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent sx={{ py: 1.5, px: 2 }}>
+              <Paper
+                elevation={1}
+                sx={{
+                  p: { xs: 1, sm: 2 },
+                  bgcolor: "background.paper",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle1"
+                    component="div"
+                    sx={{
+                      fontSize: { xs: "1rem", sm: "1.25rem" },
+                      wordBreak: "break-word",
+                      pr: 1,
+                    }}
+                  >
+                    {entry.name}
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => onDelete(entry.id)}
+                    sx={{
+                      color: "error.main",
+                      "&:hover": {
+                        bgcolor: "error.light",
+                        color: "error.dark",
+                      },
+                      flexShrink: 0,
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+                <List dense disablePadding>
+                  {entry.ingredients.map((ingredient, index) => (
+                    <ListItem key={index} sx={{ py: 0 }}>
+                      <ListItemText
+                        primary={`${ingredient.ingredient.name} - ${ingredient.amount}g`}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+                <Divider sx={{ my: 1 }} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 2,
+                    flexWrap: "wrap",
+                    fontSize: "0.875rem",
+                    color: "text.secondary",
+                  }}
+                >
+                  <Typography variant="body2">
+                    {nutrition.calories.toFixed(1)} kcal
+                  </Typography>
+                  <Typography variant="body2">
+                    B: {nutrition.proteins.toFixed(1)}g
+                  </Typography>
+                  <Typography variant="body2">
+                    W: {nutrition.carbs.toFixed(1)}g
+                  </Typography>
+                  <Typography variant="body2">
+                    T: {nutrition.fats.toFixed(1)}g
+                  </Typography>
+                </Box>
+              </Paper>
+            </TimelineContent>
+          </TimelineItem>
+        );
+      })}
+    </Timeline>
+  );
+}
