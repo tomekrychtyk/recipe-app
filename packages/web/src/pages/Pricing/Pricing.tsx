@@ -172,7 +172,7 @@ export function Pricing() {
             }}
           >
             <CardHeader
-              title="Plan Aktywny"
+              title="Plan ACTIVE"
               subheader="Dla osób, których priorytetem jest zdrowa dieta"
               titleTypography={{ variant: "h4" }}
               sx={{
