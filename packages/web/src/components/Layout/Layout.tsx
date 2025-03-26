@@ -24,6 +24,7 @@ import {
   Add as AddIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,
+  Payments as PaymentsIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -33,10 +34,10 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-const publicNavItems = [
-  { text: "Home", icon: <HomeIcon />, path: "/" },
-  { text: "Przepisy", icon: <MenuBookIcon />, path: "/meals" },
-  { text: "Składniki", icon: <RestaurantIcon />, path: "/ingredients" },
+const menuItems = [
+  { text: "Home", path: "/", icon: <HomeIcon /> },
+  { text: "Przepisy", path: "/meals", icon: <RestaurantIcon /> },
+  { text: "Plan", path: "/pricing", icon: <PaymentsIcon /> },
 ];
 
 export function Layout({ children }: LayoutProps) {
@@ -81,7 +82,7 @@ export function Layout({ children }: LayoutProps) {
         gap: 2,
       }}
     >
-      {[...publicNavItems].map((item) => (
+      {menuItems.map((item) => (
         <Button
           key={item.text}
           startIcon={item.icon}

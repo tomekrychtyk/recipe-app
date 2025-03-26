@@ -17,6 +17,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { AuthCallbackPage } from "./pages/AuthCallbackPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { FoodDiary } from "./pages/FoodDiary/FoodDiary";
+import { Pricing } from "./pages/Pricing/Pricing";
 
 export function App() {
   return (
@@ -41,6 +42,7 @@ export function App() {
                       <Route path="/meals" element={<Meals />} />
                       <Route path="/meals/:id" element={<MealDetails />} />
                       <Route path="/ingredients" element={<Ingredients />} />
+                      <Route path="/pricing" element={<Pricing />} />
 
                       {/* Protected Routes */}
                       <Route
