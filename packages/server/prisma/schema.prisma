@@ -74,6 +74,7 @@ model Meal {
   name        String
   categoryId  String
   description String?
+  thumbnailUrl String?
   ingredients MealIngredient[]
   diaryEntries  FoodDiaryEntry[]
   createdAt   DateTime         @default(now())

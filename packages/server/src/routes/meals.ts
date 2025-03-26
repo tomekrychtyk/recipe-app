@@ -58,6 +58,7 @@ router.get("/", async (req, res) => {
       categoryId: meal.categoryId,
       description: meal.description,
       userId: meal.userId,
+      thumbnailUrl: meal.thumbnailUrl,
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
         amount: ing.amount,
@@ -84,7 +85,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", validateMeal, async (req, res) => {
   try {
-    const { name, description, ingredients, userId } = req.body;
+    const { name, description, ingredients, userId, thumbnailUrl } = req.body;
 
     const ingredientIds = ingredients.map(
       (i: MealIngredient) => i.ingredientId
@@ -109,6 +110,7 @@ router.post("/", validateMeal, async (req, res) => {
         description: description?.trim(),
         categoryId: req.body.categoryId,
         userId,
+        thumbnailUrl,
         ingredients: {
           create: ingredients.map((ing: MealIngredient) => ({
             amount: ing.amount,
@@ -132,6 +134,7 @@ router.post("/", validateMeal, async (req, res) => {
       name: meal.name,
       description: meal.description,
       userId: meal.userId,
+      thumbnailUrl: meal.thumbnailUrl,
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
         amount: ing.amount,

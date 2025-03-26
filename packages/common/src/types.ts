@@ -60,6 +60,7 @@ export interface Meal {
   name: string;
   categoryId: MealCategory;
   description?: string;
+  thumbnailUrl?: string;
   totalNutrients: {
     // Basic nutrients
     proteins: number;

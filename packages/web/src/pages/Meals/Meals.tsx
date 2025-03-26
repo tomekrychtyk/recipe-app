@@ -27,7 +27,11 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { getMealCategoryName } from "@/utils/meals";
 import { useAuth } from "@/contexts/AuthContext";
-import { MEAL_CATEGORIES, type MealCategory } from "@food-recipe-app/common";
+import {
+  MEAL_CATEGORIES,
+  type MealCategory,
+  type Meal,
+} from "@food-recipe-app/common";
 
 export function Meals() {
   const {
@@ -82,151 +86,67 @@ export function Meals() {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 4,
-        }}
-      >
-        <Typography variant="h4" component="h1">
+    <Box sx={{ maxWidth: 1200, mx: "auto", mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
           🍽️ Przepisy
         </Typography>
-        {isAdmin && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate("/meals/new")}
-          >
-            Dodaj przepis
-          </Button>
-        )}
-      </Box>
 
-      <Box sx={{ mb: 3 }}>
-        <TextField
-          select
-          label="Kategoria"
-          value={selectedCategory}
-          onChange={(e) =>
-            setSelectedCategory(e.target.value as MealCategory | "all")
-          }
-          sx={{ minWidth: 200 }}
-        >
-          <MenuItem value="all">Wszystkie kategorie</MenuItem>
-          {MEAL_CATEGORIES.map((category) => (
-            <MenuItem key={category.id} value={category.id}>
-              {category.name}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Box>
-
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Nazwa</TableCell>
-              <TableCell align="right">Białko (g)</TableCell>
-              <TableCell align="right">Kategoria</TableCell>
-              <TableCell align="right">Węglowodany (g)</TableCell>
-              <TableCell align="right">Tłuszcze (g)</TableCell>
-              <TableCell align="right">Kalorie (kcal)</TableCell>
-              <TableCell align="right">Akcje</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredMeals.map((meal) => (
-              <TableRow
-                key={meal.id}
-                hover
-                sx={{ cursor: "pointer" }}
-                onClick={() => navigate(`/meals/${meal.id}`)}
-              >
-                <TableCell component="th" scope="row">
-                  <Typography variant="body1">{meal.name}</Typography>
-                  {meal.description && (
-                    <Typography variant="body2" color="text.secondary">
-                      {meal.description}
-                    </Typography>
-                  )}
-                </TableCell>
-                <TableCell align="right">
-                  {formatNutrient(meal.totalNutrients.proteins)}
-                </TableCell>
-                <TableCell align="right">
-                  {getMealCategoryName(meal.categoryId)}
-                </TableCell>
-                <TableCell align="right">
-                  {formatNutrient(meal.totalNutrients.carbs)}
-                </TableCell>
-                <TableCell align="right">
-                  {formatNutrient(meal.totalNutrients.fats)}
-                </TableCell>
-                <TableCell align="right">
-                  {formatNutrient(meal.totalNutrients.calories)}
-                </TableCell>
-                <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-                  {isAdmin ? (
-                    <>
-                      <IconButton
-                        onClick={() => navigate(`/meals/${meal.id}/edit`)}
-                        color="primary"
-                        sx={{ mr: 1 }}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteClick(meal.id)}
-                        disabled={isDeleting}
-                        color="error"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  ) : (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Zdjęcie</TableCell>
+                <TableCell>Nazwa</TableCell>
+                <TableCell>Kategoria</TableCell>
+                <TableCell>Kalorie</TableCell>
+                <TableCell>Białko</TableCell>
+                <TableCell>Węglowodany</TableCell>
+                <TableCell>Tłuszcze</TableCell>
+                <TableCell>Akcje</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredMeals.map((meal) => (
+                <TableRow key={meal.id}>
+                  <TableCell>
+                    {meal.thumbnailUrl && (
+                      <img
+                        src={meal.thumbnailUrl}
+                        alt={meal.name}
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          objectFit: "cover",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>{meal.name}</TableCell>
+                  <TableCell>{getMealCategoryName(meal.categoryId)}</TableCell>
+                  <TableCell>
+                    {meal.totalNutrients.calories.toFixed(1)}
+                  </TableCell>
+                  <TableCell>
+                    {meal.totalNutrients.proteins.toFixed(1)}
+                  </TableCell>
+                  <TableCell>{meal.totalNutrients.carbs.toFixed(1)}</TableCell>
+                  <TableCell>{meal.totalNutrients.fats.toFixed(1)}</TableCell>
+                  <TableCell>
                     <IconButton
                       onClick={() => navigate(`/meals/${meal.id}`)}
                       color="primary"
                     >
                       <VisibilityIcon />
                     </IconButton>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-            {filteredMeals.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={7} align="center">
-                  {selectedCategory === "all"
-                    ? "Nie zostały dodane żadne przepisy."
-                    : "Brak przepisów w wybranej kategorii."}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Dialog
-        open={deleteConfirmId !== null}
-        onClose={() => setDeleteConfirmId(null)}
-      >
-        <DialogTitle>Potwierdzenie usunięcia</DialogTitle>
-        <DialogContent>Czy na pewno chcesz usunąć ten posiłek?</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteConfirmId(null)}>Anuluj</Button>
-          <Button
-            onClick={handleDeleteConfirm}
-            color="error"
-            variant="contained"
-          >
-            Usuń
-          </Button>
-        </DialogActions>
-      </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Paper>
     </Box>
   );
 }
