@@ -1,15 +1,16 @@
 import express from "express";
+import { PrismaClient } from "@prisma/client";
 import { handleWebhook } from "@food-recipe-app/payments";
-import { prisma } from "../db";
 
 const router = express.Router();
+const prisma = new PrismaClient();
 
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   async (req, res) => {
     const signature = req.headers["stripe-signature"];
-    if (!signature) {
+    if (!signature || Array.isArray(signature)) {
       return res.status(400).json({ error: "No signature" });
     }
 
@@ -24,12 +25,18 @@ router.post(
       if (result.success && result.userId) {
         switch (result.event) {
           case "checkout.session.completed": {
-            // Update user's subscription status
-            await prisma.user.update({
-              where: { id: result.userId },
-              data: {
-                subscriptionStatus: "active",
-                subscriptionPlanId: result.planId,
+            // Create or update subscription
+            await prisma.subscription.upsert({
+              where: { userId: result.userId },
+              create: {
+                userId: result.userId,
+                status: "active",
+                planId: result.planId!,
+                stripeCustomerId: result.userId,
+              },
+              update: {
+                status: "active",
+                planId: result.planId!,
                 stripeCustomerId: result.userId,
               },
             });
@@ -37,20 +44,20 @@ router.post(
           }
           case "customer.subscription.updated": {
             // Update subscription status
-            await prisma.user.update({
-              where: { id: result.userId },
+            await prisma.subscription.update({
+              where: { userId: result.userId },
               data: {
-                subscriptionStatus: result.status,
+                status: result.status,
               },
             });
             break;
           }
           case "customer.subscription.deleted": {
             // Update subscription status to cancelled
-            await prisma.user.update({
-              where: { id: result.userId },
+            await prisma.subscription.update({
+              where: { userId: result.userId },
               data: {
-                subscriptionStatus: "cancelled",
+                status: "cancelled",
               },
             });
             break;

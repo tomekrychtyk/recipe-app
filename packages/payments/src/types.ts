@@ -57,3 +57,16 @@ export const CheckoutSessionSchema = z.object({
 });
 
 export type CheckoutSession = z.infer<typeof CheckoutSessionSchema>;
+
+export type WebhookEvent =
+  | "checkout.session.completed"
+  | "customer.subscription.updated"
+  | "customer.subscription.deleted";
+
+export interface WebhookResult {
+  success: boolean;
+  event?: WebhookEvent;
+  userId?: string;
+  planId?: string;
+  status?: string;
+}

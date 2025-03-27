@@ -1,12 +1,12 @@
 import Stripe from "stripe";
-import { BillingPlan, CheckoutSession } from "./types";
+import { BillingPlan, CheckoutSession, WebhookResult } from "./types";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error("STRIPE_SECRET_KEY is not set");
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-02-24.acacia",
+  apiVersion: "2023-10-16",
 });
 
 export async function createCheckoutSession(
@@ -47,7 +47,7 @@ export async function handleWebhook(
   payload: string,
   signature: string,
   webhookSecret: string
-) {
+): Promise<WebhookResult> {
   try {
     const event = stripe.webhooks.constructEvent(
       payload,
@@ -58,50 +58,36 @@ export async function handleWebhook(
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        const userId = session.client_reference_id;
-        const planId = session.metadata?.planId;
-        const interval = session.metadata?.interval;
-
-        // Here you would typically:
-        // 1. Update the user's subscription status in your database
-        // 2. Grant access to premium features
-        // 3. Send a welcome email
-        // 4. etc.
-
         return {
           success: true,
-          userId,
-          planId,
-          interval,
+          event: "checkout.session.completed",
+          userId: session.client_reference_id || undefined,
+          planId: session.metadata?.planId || undefined,
         };
       }
-
-      case "customer.subscription.updated":
-      case "customer.subscription.deleted": {
+      case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
-        const userId = subscription.metadata?.userId;
-
-        // Here you would typically:
-        // 1. Update the user's subscription status in your database
-        // 2. Revoke or update access to premium features
-        // 3. Send a notification email
-        // 4. etc.
-
         return {
           success: true,
-          userId,
+          event: "customer.subscription.updated",
+          userId: subscription.metadata?.userId || undefined,
           status: subscription.status,
         };
       }
-
-      default:
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription;
         return {
           success: true,
-          event: event.type,
+          event: "customer.subscription.deleted",
+          userId: subscription.metadata?.userId || undefined,
+          status: subscription.status,
         };
+      }
+      default:
+        return { success: true };
     }
   } catch (error) {
     console.error("Webhook error:", error);
-    throw error;
+    return { success: false };
   }
 }
