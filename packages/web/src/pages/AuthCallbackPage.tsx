@@ -56,20 +56,20 @@ export function AuthCallbackPage() {
             email: session.user.email,
           });
 
-          const { data: newUser, error: insertError } = await supabase
+          const { data: user, error: insertError } = await supabase
             .from("users")
-            .insert([
-              {
-                id: session.user.id,
-                email: session.user.email,
-                role: "user",
-                created_at: new Date().toISOString(),
-              },
-            ])
+            .insert({
+              id: session.user.id,
+              email: session.user.email,
+              name: session.user.user_metadata?.full_name,
+              password: "", // We don't store passwords for OAuth users
+              role: "USER",
+              updated_at: new Date().toISOString(),
+            })
             .select()
             .single();
 
-          console.log("Insert result:", { newUser, insertError });
+          console.log("Insert result:", { user, insertError });
 
           if (insertError) {
             console.error("Insert error details:", insertError);

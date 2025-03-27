@@ -121,7 +121,7 @@ export function Pricing() {
                 component="div"
                 sx={{ textAlign: "center", mb: 3 }}
               >
-                $0
+                0 zł
                 <Typography
                   component="span"
                   variant="h6"
@@ -193,7 +193,7 @@ export function Pricing() {
                 component="div"
                 sx={{ textAlign: "center", mb: 3 }}
               >
-                $9.99
+                19.99 zł
                 <Typography
                   component="span"
                   variant="h6"
