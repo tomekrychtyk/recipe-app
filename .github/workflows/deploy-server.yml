@@ -7,6 +7,7 @@ on:
     paths:
       - "packages/server/**"
       - "packages/common/**"
+      - "packages/payments/**"
 
 jobs:
   deploy:
@@ -48,6 +49,12 @@ jobs:
           pnpm build
           cd ..
 
+      - name: Build payments package
+        run: |
+          cd packages/payments
+          pnpm build
+          cd ..
+
       - name: Type check server
         run: |
           cd packages/server
@@ -77,12 +84,16 @@ jobs:
           cd packages/server
           mkdir -p deploy/packages/server
           mkdir -p deploy/packages/common
+          mkdir -p deploy/packages/payments
 
           # Copy server files
           cp -r dist package.json prisma deploy/packages/server/
 
           # Copy common package
           cp -r ../common/dist ../common/package.json deploy/packages/common/
+
+          # Copy payments package
+          cp -r ../payments/dist ../payments/package.json deploy/packages/payments/
 
           # Create root package.json for pnpm workspace
           echo '{
