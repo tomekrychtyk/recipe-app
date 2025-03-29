@@ -62,6 +62,7 @@ router.get("/", async (req, res) => {
       ingredients: meal.ingredients.map((ing) => ({
         ingredientId: ing.ingredientId,
         amount: ing.amount,
+        ingredient: ing.ingredient,
       })),
       totalNutrients: calculateTotalNutrients(meal.ingredients),
     }));
