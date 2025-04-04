@@ -60,6 +60,8 @@ export function MealDetails() {
     );
   }
 
+  console.log(meal);
+
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -90,6 +92,29 @@ export function MealDetails() {
           </Button>
         )}
       </Box>
+
+      {meal.thumbnailUrl && (
+        <Box
+          sx={{
+            mb: 4,
+            borderRadius: 2,
+            overflow: "hidden",
+            maxHeight: 400,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src={meal.thumbnailUrl}
+            alt={meal.name}
+            style={{
+              width: "100%",
+              maxHeight: "400px",
+              objectFit: "cover",
+            }}
+          />
+        </Box>
+      )}
 
       <Paper sx={{ mb: 4, p: 2 }}>
         <Stack

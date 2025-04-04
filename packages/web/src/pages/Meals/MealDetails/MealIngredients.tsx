@@ -9,6 +9,7 @@ import {
   Table,
   TableCell,
   Chip,
+  Typography,
 } from "@mui/material";
 import { getCategoryColor, getCategoryName } from "../../../utils";
 
@@ -35,12 +36,24 @@ export const MealIngredients = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Składnik</TableCell>
-            <TableCell align="right">Ilość (g)</TableCell>
-            <TableCell align="right">Białko (g)</TableCell>
-            <TableCell align="right">Węglowodany (g)</TableCell>
-            <TableCell align="right">Tłuszcze (g)</TableCell>
-            <TableCell align="right">Kalorie (kcal)</TableCell>
+            <TableCell>
+              <Typography sx={{ fontWeight: 700 }}>Składnik</Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }}>Ilość (g)</Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }}>Białko (g)</Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }}>Węglowodany (g)</Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }}>Tłuszcze (g)</Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }}>Kalorie (kcal)</Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -113,19 +126,35 @@ export const MealIngredients = ({
               color: (theme) => theme.palette.primary.contrastText,
             }}
           >
-            <TableCell>Na 1 porcję</TableCell>
-            <TableCell align="right">{totalWeightSinglePortion}</TableCell>
-            <TableCell align="right">
-              {meal.totalNutrients.proteins.toFixed(1)}
+            <TableCell>
+              <Typography sx={{ fontWeight: 700 }} color="black">
+                Na 1 porcję
+              </Typography>
             </TableCell>
             <TableCell align="right">
-              {meal.totalNutrients.carbs.toFixed(1)}
+              <Typography sx={{ fontWeight: 700 }} color="black">
+                {totalWeightSinglePortion}
+              </Typography>
             </TableCell>
             <TableCell align="right">
-              {meal.totalNutrients.fats.toFixed(1)}
+              <Typography sx={{ fontWeight: 700 }} color="black">
+                {meal.totalNutrients.proteins.toFixed(1)}
+              </Typography>
             </TableCell>
             <TableCell align="right">
-              {meal.totalNutrients.calories.toFixed(1)}
+              <Typography sx={{ fontWeight: 700 }} color="black">
+                {meal.totalNutrients.carbs.toFixed(1)}
+              </Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }} color="black">
+                {meal.totalNutrients.fats.toFixed(1)}
+              </Typography>
+            </TableCell>
+            <TableCell align="right">
+              <Typography sx={{ fontWeight: 700 }} color="black">
+                {meal.totalNutrients.calories.toFixed(1)}
+              </Typography>
             </TableCell>
           </TableRow>
         </TableBody>

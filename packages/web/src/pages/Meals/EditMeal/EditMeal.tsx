@@ -266,7 +266,7 @@ export function EditMeal() {
                   })}
                   <TableRow>
                     <TableCell>
-                      <strong>Total</strong>
+                      <strong>Razem</strong>
                     </TableCell>
                     <TableCell align="right">-</TableCell>
                     <TableCell align="right">

@@ -308,6 +308,7 @@ router.get("/:id", async (req, res) => {
         ingredient: ing.ingredient,
       })),
       totalNutrients,
+      thumbnailUrl: meal.thumbnailUrl,
     });
   } catch (error) {
     console.error("Failed to fetch meal:", error);

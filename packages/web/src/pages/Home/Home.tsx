@@ -117,6 +117,7 @@ export function HomePage() {
       >
         <Typography
           variant="body1"
+          component="div"
           paragraph
           sx={{
             color: "text.secondary",

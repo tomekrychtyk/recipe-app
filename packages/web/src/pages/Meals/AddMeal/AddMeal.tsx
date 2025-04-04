@@ -238,7 +238,7 @@ export function AddMeal() {
               onClick={handleAddIngredient}
               disabled={!currentIngredient || !currentAmount}
             >
-              Add
+              Dodaj
             </Button>
           </Box>
 
