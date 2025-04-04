@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-interface SelectedIngredient {
+export interface SelectedIngredient {
   ingredient: Ingredient;
   amount: number;
 }
 
-interface TotalNutrients {
+export interface TotalNutrients {
   proteins: number;
   carbs: number;
   fats: number;

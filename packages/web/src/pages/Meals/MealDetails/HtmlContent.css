@@ -1,0 +1,21 @@
+.html-content p {
+  margin: 0;
+  padding: 0;
+}
+
+.html-content ul {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.html-content h1 {
+  font-size: 1.5rem;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.html-content h2 {
+  font-size: 1.25rem;
+  margin-top: 12px;
+  margin-bottom: 6px;
+}

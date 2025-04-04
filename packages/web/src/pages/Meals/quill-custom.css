@@ -1,0 +1,22 @@
+/* Custom styling for React Quill to match other inputs */
+
+/* Rounded borders and matching border color */
+.ql-container {
+  border-radius: 0 0 4px 4px !important;
+  border-color: rgba(252, 252, 252, 0.23) !important;
+}
+
+.ql-toolbar {
+  border-radius: 4px 4px 0 0 !important;
+  border-color: rgba(255, 255, 255, 0.23) !important;
+}
+
+/* Lighter placeholder text */
+.ql-editor.ql-blank::before {
+  color: rgba(255, 255, 255, 0.38) !important;
+}
+
+/* Increase the container height to match other inputs better */
+.quill-container .ql-container {
+  min-height: 150px;
+}

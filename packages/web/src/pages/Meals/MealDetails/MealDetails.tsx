@@ -19,6 +19,13 @@ import { NutrientRDAGraph } from "../../../components/NutrientRDAGraph";
 import { MacroSummary } from "./MacroSummary";
 import { MealIngredients } from "./MealIngredients";
 import { useAuth } from "@/contexts/AuthContext";
+import "./HtmlContent.css";
+
+const HtmlContent = ({ html }: { html: string }) => {
+  return (
+    <div className="html-content" dangerouslySetInnerHTML={{ __html: html }} />
+  );
+};
 
 export function MealDetails() {
   const { id } = useParams<{ id: string }>();
@@ -60,8 +67,6 @@ export function MealDetails() {
     );
   }
 
-  console.log(meal);
-
   return (
     <Box sx={{ p: 3 }}>
       <Box
@@ -76,11 +81,6 @@ export function MealDetails() {
           <Typography variant="h4" component="h1" gutterBottom>
             {meal.name}
           </Typography>
-          {meal.description && (
-            <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-              {meal.description}
-            </Typography>
-          )}
         </Box>
         {isAdmin && (
           <Button
@@ -113,6 +113,12 @@ export function MealDetails() {
               objectFit: "cover",
             }}
           />
+        </Box>
+      )}
+
+      {meal.description && (
+        <Box sx={{ mb: 2 }}>
+          <HtmlContent html={meal.description} />
         </Box>
       )}
 

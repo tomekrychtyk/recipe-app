@@ -19,6 +19,9 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "../quill-custom.css";
 import {
   useGetMealsQuery,
   useUpdateMealMutation,
@@ -55,6 +58,24 @@ export function EditMeal() {
     null
   );
   const [currentAmount, setCurrentAmount] = useState("");
+
+  // Define Quill modules/formats
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "bullet" }],
+    ],
+  };
+
+  const quillFormats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "list",
+    "bullet",
+  ];
 
   useEffect(() => {
     const meal = meals?.find((m) => m.id === mealId);
@@ -166,15 +187,18 @@ export function EditMeal() {
             sx={{ mb: 2 }}
           />
 
-          <TextField
-            fullWidth
-            label="Opis przepisu"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            multiline
-            rows={2}
-            sx={{ mb: 3 }}
-          />
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Opis przepisu
+          </Typography>
+          <Box sx={{ mb: 3 }} className="quill-container">
+            <ReactQuill
+              value={description}
+              onChange={setDescription}
+              modules={quillModules}
+              formats={quillFormats}
+              placeholder="Dodaj opis przepisu..."
+            />
+          </Box>
 
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
             <TextField

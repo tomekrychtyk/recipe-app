@@ -5,24 +5,19 @@ import {
   TextField,
   Button,
   Autocomplete,
-  IconButton,
   Alert,
   CircularProgress,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   MenuItem,
   FormControl,
   InputLabel,
   Select,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "../quill-custom.css";
 import {
   useAddMealMutation,
   useUploadMealImageMutation,
@@ -32,7 +27,7 @@ import type { Ingredient, MealCategory } from "@food-recipe-app/common";
 import { MEAL_CATEGORIES } from "@food-recipe-app/common";
 import { useAuth } from "@/contexts/AuthContext";
 import { styled } from "@mui/material/styles";
-import { SelectedIngredients } from "./SelectedIngredients";
+import { SelectedIngredient, SelectedIngredients } from "./SelectedIngredients";
 
 const VisuallyHiddenInput = styled("input")`
   clip: rect(0 0 0 0);
@@ -45,11 +40,6 @@ const VisuallyHiddenInput = styled("input")`
   white-space: nowrap;
   width: 1px;
 `;
-
-interface SelectedIngredient {
-  ingredient: Ingredient;
-  amount: number;
-}
 
 type MealVisibility = "public" | "private";
 
@@ -75,6 +65,24 @@ export function AddMeal() {
   const [isUploading, setIsUploading] = useState(false);
   const [visibility, setVisibility] = useState<MealVisibility>("private");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Define Quill modules/formats
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "bullet" }],
+    ],
+  };
+
+  const quillFormats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "list",
+    "bullet",
+  ];
 
   const handleAddIngredient = () => {
     if (currentIngredient && currentAmount && Number(currentAmount) > 0) {
@@ -176,7 +184,7 @@ export function AddMeal() {
               disabled={isUploading}
               sx={{ mb: 2 }}
             >
-              {isUploading ? "Uploading..." : "Dodaj zdjęcie"}
+              {isUploading ? "Dodawanie zdjęcia..." : "Dodaj zdjęcie"}
               <VisuallyHiddenInput
                 type="file"
                 accept="image/*"
@@ -282,15 +290,18 @@ export function AddMeal() {
               handleRemoveIngredient={handleRemoveIngredient}
             />
           )}
-          <TextField
-            fullWidth
-            label="Opis przepisu"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            multiline
-            rows={2}
-            sx={{ mb: 3 }}
-          />
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Opis przepisu
+          </Typography>
+          <Box sx={{ mb: 3 }} className="quill-container">
+            <ReactQuill
+              value={description}
+              onChange={setDescription}
+              modules={quillModules}
+              formats={quillFormats}
+              placeholder="Dodaj opis przepisu..."
+            />
+          </Box>
           <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
             <Button onClick={() => navigate(-1)}>Anuluj</Button>
             <Button
