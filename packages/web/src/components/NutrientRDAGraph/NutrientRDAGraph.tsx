@@ -8,30 +8,34 @@ import { HorizontalGraph } from "../HorizontalGraph";
 
 interface Props {
   totalNutrients: Meal["totalNutrients"];
+  portions?: number;
 }
 
-export function NutrientRDAGraph({ totalNutrients }: Props) {
+export function NutrientRDAGraph({ totalNutrients, portions = 1 }: Props) {
   const calculatePercentage = (value: number, rdaValue: number) => {
-    return Math.min((value / rdaValue) * 100, Infinity);
+    // Scale value by portions
+    const scaledValue = value * portions;
+    return Math.min((scaledValue / rdaValue) * 100, Infinity);
   };
 
   return (
     <Box sx={{ mt: 4 }}>
       <Typography variant="h6" gutterBottom>
-        Witaminy i minerały
+        Witaminy i minerały {portions > 1 && `(${portions} porcje)`}
       </Typography>
 
       <Box sx={{ display: "grid", gridTemplateColumns: "1fr", gap: 1 }}>
         {Object.entries({ ...VITAMINS_RDA, ...MINERALS_RDA }).map(
           ([nutrient, rdaValue]) => {
-            const value =
+            const baseValue =
               totalNutrients[nutrient as keyof typeof totalNutrients];
-            const percentage = calculatePercentage(value, rdaValue.value);
+            const scaledValue = baseValue * portions;
+            const percentage = calculatePercentage(baseValue, rdaValue.value);
 
             return (
               <Tooltip
                 key={nutrient}
-                title={`${value.toFixed(1)} / ${rdaValue.value} ${rdaValue.unit}`}
+                title={`${scaledValue.toFixed(1)} / ${rdaValue.value} ${rdaValue.unit}`}
                 arrow
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>

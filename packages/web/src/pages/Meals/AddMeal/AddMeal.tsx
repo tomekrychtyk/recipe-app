@@ -207,6 +207,14 @@ export function AddMeal() {
             sx={{ mb: 2 }}
           />
 
+          <Typography
+            variant="subtitle2"
+            sx={{ mb: 2, fontStyle: "italic", color: "text.secondary" }}
+          >
+            Dodawane składniki stanowią jedną porcję posiłku. Na stronie
+            szczegółów przepisu będziesz mógł/mogła zwiększyć ilość porcji.
+          </Typography>
+
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
             <Autocomplete
               value={currentIngredient}

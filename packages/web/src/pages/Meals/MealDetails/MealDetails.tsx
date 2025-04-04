@@ -4,9 +4,16 @@ import {
   CircularProgress,
   Alert,
   Button,
+  Paper,
+  Stack,
+  IconButton,
+  TextField,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 import { useGetMealByIdQuery } from "../../../store/api/meals";
 import { NutrientRDAGraph } from "../../../components/NutrientRDAGraph";
 import { MacroSummary } from "./MacroSummary";
@@ -18,6 +25,24 @@ export function MealDetails() {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const { data: meal, isLoading, error } = useGetMealByIdQuery(parseInt(id!));
+  const [portions, setPortions] = useState(1);
+
+  const handleIncrementPortions = () => {
+    setPortions((prev) => prev + 1);
+  };
+
+  const handleDecrementPortions = () => {
+    setPortions((prev) => Math.max(1, prev - 1));
+  };
+
+  const handlePortionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value >= 1) {
+      setPortions(value);
+    } else if (e.target.value === "") {
+      setPortions(1);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -66,13 +91,48 @@ export function MealDetails() {
         )}
       </Box>
 
-      <MacroSummary meal={meal} />
+      <Paper sx={{ mb: 4, p: 2 }}>
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography variant="subtitle1">Ilość porcji:</Typography>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              onClick={handleDecrementPortions}
+              disabled={portions <= 1}
+              size="small"
+            >
+              <RemoveIcon />
+            </IconButton>
+            <TextField
+              value={portions}
+              onChange={handlePortionChange}
+              inputProps={{
+                min: 1,
+                style: { textAlign: "center" },
+                inputMode: "numeric",
+              }}
+              variant="outlined"
+              size="small"
+              sx={{ width: "60px", mx: 1 }}
+            />
+            <IconButton onClick={handleIncrementPortions} size="small">
+              <AddIcon />
+            </IconButton>
+          </Box>
+        </Stack>
+      </Paper>
+
+      <MacroSummary meal={meal} portions={portions} />
 
       <Typography variant="h5" component="h2" gutterBottom>
         Składniki
       </Typography>
 
-      <MealIngredients meal={meal} />
+      <MealIngredients meal={meal} portions={portions} />
 
       <Box
         sx={{
@@ -83,7 +143,10 @@ export function MealDetails() {
           },
         }}
       >
-        <NutrientRDAGraph totalNutrients={meal.totalNutrients} />
+        <NutrientRDAGraph
+          totalNutrients={meal.totalNutrients}
+          portions={portions}
+        />
       </Box>
     </Box>
   );
