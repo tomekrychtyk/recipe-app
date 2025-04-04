@@ -1,5 +1,10 @@
 import type { MealCategory } from "./constants/categories";
 
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
+
 export interface Ingredient {
   id: number;
   name: string;

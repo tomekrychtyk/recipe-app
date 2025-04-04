@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { AuthState, User, supabase } from "../lib/supabase";
+import { UserRole } from "@food-recipe-app/common";
 
 interface AuthContextType extends AuthState {
   signInWithGoogle: () => Promise<void>;
@@ -104,7 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     ...state,
     signInWithGoogle,
     signOut,
-    isAdmin: state.user?.role === "admin",
+    isAdmin: state.user?.role === UserRole.ADMIN,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

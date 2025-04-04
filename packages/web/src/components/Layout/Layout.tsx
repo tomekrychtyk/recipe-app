@@ -25,6 +25,7 @@ import {
   Logout as LogoutIcon,
   Person as PersonIcon,
   Payments as PaymentsIcon,
+  Kitchen as KitchenIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -52,7 +53,7 @@ export function Layout({ children }: LayoutProps) {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -186,6 +187,14 @@ export function Layout({ children }: LayoutProps) {
           </ListItemIcon>
           {user.email}
         </MenuItem>
+        {isAdmin && (
+          <MenuItem onClick={() => navigate("/ingredients")}>
+            <ListItemIcon>
+              <KitchenIcon fontSize="small" />
+            </ListItemIcon>
+            Składniki
+          </MenuItem>
+        )}
         <MenuItem onClick={handleSignOut}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
