@@ -81,6 +81,8 @@ jobs:
           AWS_HOST: ${{ secrets.AWS_HOST }}
           AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
           AWS_USERNAME: ${{ secrets.AWS_USERNAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
         run: |
           # Create deployment package with common package
@@ -119,6 +121,8 @@ jobs:
           echo "AWS_HOST=\"${AWS_HOST}\"" >> deploy/packages/server/.env
           echo "AWS_USERNAME=\"${AWS_USERNAME}\"" >> deploy/packages/server/.env
           echo "AWS_SSH_KEY=\"${AWS_SSH_KEY}\"" >> deploy/packages/server/.env
+          echo "AWS_ACCESS_KEY_ID=\"${AWS_ACCESS_KEY_ID}\"" >> deploy/packages/server/.env
+          echo "AWS_SECRET_ACCESS_KEY=\"${AWS_SECRET_ACCESS_KEY}\"" >> deploy/packages/server/.env
 
           # Create deployment archive
           cd deploy
