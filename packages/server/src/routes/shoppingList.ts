@@ -285,19 +285,40 @@ router.post("/generate-from-planned", async (req: Request, res: Response) => {
       });
     }
 
-    // Get all planned meals within the date range
+    // Create Date objects from the input strings
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Expand date range to handle timezone differences
+    // Start date: set to the beginning of the day before
+    const expandedStart = new Date(start);
+    expandedStart.setDate(expandedStart.getDate() - 1);
+    expandedStart.setHours(0, 0, 0, 0);
+
+    // End date: set to the end of the day after
+    const expandedEnd = new Date(end);
+    expandedEnd.setDate(expandedEnd.getDate() + 1);
+    expandedEnd.setHours(23, 59, 59, 999);
+
+    // Get all planned meals within the expanded date range
     const plannedMeals = await prisma.plannedMeal.findMany({
       where: {
         userId,
         date: {
-          gte: new Date(startDate),
-          lte: new Date(endDate),
+          gte: expandedStart,
+          lte: expandedEnd,
         },
       },
       include: {
-        ingredients: true,
+        ingredients: {
+          include: {
+            ingredient: true,
+          },
+        },
       },
     });
+
+    console.log(`Found ${plannedMeals.length} planned meals`);
 
     if (plannedMeals.length === 0) {
       return res.status(404).json({
@@ -312,14 +333,17 @@ router.post("/generate-from-planned", async (req: Request, res: Response) => {
     >();
 
     plannedMeals.forEach((meal) => {
-      meal.ingredients.forEach((ingredient) => {
-        if (ingredientMap.has(ingredient.ingredientId)) {
-          const existing = ingredientMap.get(ingredient.ingredientId)!;
-          existing.amount += ingredient.amount;
+      meal.ingredients.forEach((item) => {
+        const ingredientId = item.ingredientId;
+        const amount = item.amount;
+
+        if (ingredientMap.has(ingredientId)) {
+          const existing = ingredientMap.get(ingredientId)!;
+          existing.amount += amount;
         } else {
-          ingredientMap.set(ingredient.ingredientId, {
-            ingredientId: ingredient.ingredientId,
-            amount: ingredient.amount,
+          ingredientMap.set(ingredientId, {
+            ingredientId,
+            amount,
           });
         }
       });

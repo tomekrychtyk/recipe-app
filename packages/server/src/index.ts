@@ -6,6 +6,7 @@ import ingredientRoutes from "./routes/ingredients";
 import mealRoutes from "./routes/meals";
 import foodDiaryRoutes from "./routes/foodDiary";
 import mealPlannerRoutes from "./routes/mealPlanner";
+import shoppingListRoutes from "./routes/shoppingList";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/meals", mealRoutes);
 app.use("/api/food-diary", foodDiaryRoutes);
 app.use("/api/meal-planner", mealPlannerRoutes);
+app.use("/api/shopping-list", shoppingListRoutes);
 
 const PORT = process.env.PORT || 4000;
 
