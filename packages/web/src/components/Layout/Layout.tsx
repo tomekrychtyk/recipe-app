@@ -28,6 +28,7 @@ import {
   Payments as PaymentsIcon,
   Kitchen as KitchenIcon,
   ShoppingCart as ShoppingCartIcon,
+  Dashboard as DashboardIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -159,6 +160,20 @@ export function Layout({ children }: LayoutProps) {
           }}
         >
           <ShoppingCartIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Panel analityczny">
+        <IconButton
+          onClick={() => navigate("/nutrition-dashboard")}
+          sx={{
+            color:
+              location.pathname === "/nutrition-dashboard"
+                ? "primary.main"
+                : "text.primary",
+            padding: { xs: 1, sm: 1.5 },
+          }}
+        >
+          <DashboardIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Moje przepisy">

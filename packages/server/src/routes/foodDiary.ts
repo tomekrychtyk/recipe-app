@@ -8,16 +8,46 @@ const prisma = new PrismaClient();
 // Get food diary entries
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const { userId, date } = req.query;
+    const { userId, date, startDate, endDate } = req.query;
 
     if (!userId) {
       return res.status(400).json({ errors: ["User ID is required"] });
     }
 
+    // Build the where clause for date filtering
+    let dateFilter = {};
+
+    if (date) {
+      // Single date filter
+      dateFilter = { date: new Date(date as string) };
+    } else if (startDate && endDate) {
+      // Date range filter
+      dateFilter = {
+        date: {
+          gte: new Date(startDate as string),
+          lte: new Date(endDate as string),
+        },
+      };
+    } else if (startDate) {
+      // From start date onwards
+      dateFilter = {
+        date: {
+          gte: new Date(startDate as string),
+        },
+      };
+    } else if (endDate) {
+      // Up to end date
+      dateFilter = {
+        date: {
+          lte: new Date(endDate as string),
+        },
+      };
+    }
+
     const entries = await prisma.foodDiaryEntry.findMany({
       where: {
         userId: userId as string,
-        ...(date ? { date: new Date(date as string) } : {}),
+        ...dateFilter,
       },
       include: {
         meal: {

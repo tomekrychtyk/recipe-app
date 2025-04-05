@@ -7,6 +7,8 @@ import { baseApi } from "./base";
 interface GetEntriesParams {
   userId: string;
   date?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const foodDiaryApi = baseApi.injectEndpoints({

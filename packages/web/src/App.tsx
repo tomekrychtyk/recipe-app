@@ -20,6 +20,7 @@ import { FoodDiary } from "./pages/FoodDiary/FoodDiary";
 import { Pricing } from "./pages/Pricing/Pricing";
 import { MealPlanner } from "./pages/MealPlanner";
 import { ShoppingList, ShoppingListDetail } from "./pages/ShoppingList";
+import { NutritionDashboard } from "./pages/NutritionDashboard";
 
 export function App() {
   return (
@@ -75,6 +76,10 @@ export function App() {
                         <Route
                           path="/shopping-list/:id"
                           element={<ShoppingListDetail />}
+                        />
+                        <Route
+                          path="/nutrition-dashboard"
+                          element={<NutritionDashboard />}
                         />
                         <Route path="/meals/new" element={<AddMeal />} />
                         <Route
