@@ -4,6 +4,15 @@ import { UserRole } from "@food-recipe-app/common";
 
 interface AuthContextType extends AuthState {
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string) => Promise<{ error: string | null }>;
+  signInWithEmailPassword: (
+    email: string,
+    password: string
+  ) => Promise<{ error: string | null }>;
+  signUpWithEmail: (
+    email: string,
+    password: string
+  ) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
 }
@@ -87,6 +96,91 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInWithEmail = async (email: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      setState((prev) => ({ ...prev, loading: false }));
+
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to send magic link";
+
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+      }));
+
+      return { error: errorMessage };
+    }
+  };
+
+  const signInWithEmailPassword = async (email: string, password: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      setState((prev) => ({ ...prev, loading: false }));
+
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to sign in with email and password";
+
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+      }));
+
+      return { error: errorMessage };
+    }
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    try {
+      setState((prev) => ({ ...prev, loading: true, error: null }));
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      setState((prev) => ({ ...prev, loading: false }));
+
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to sign up with email";
+
+      setState((prev) => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+      }));
+
+      return { error: errorMessage };
+    }
+  };
+
   const signOut = async () => {
     try {
       setState((prev) => ({ ...prev, loading: true, error: null }));
@@ -104,6 +198,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     ...state,
     signInWithGoogle,
+    signInWithEmail,
+    signInWithEmailPassword,
+    signUpWithEmail,
     signOut,
     isAdmin: state.user?.role === UserRole.ADMIN,
   };
