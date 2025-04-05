@@ -18,6 +18,34 @@ interface DailyMacroChartProps {
   timeRange: "day" | "week" | "month";
 }
 
+interface FoodEntry {
+  date: string;
+  meal?: {
+    totalNutrients: {
+      proteins: number;
+      carbs: number;
+      fats: number;
+    };
+  };
+  ingredients?: {
+    amount: number;
+    ingredient: {
+      proteins: number;
+      carbs: number;
+      fats: number;
+    };
+  }[];
+}
+
+interface IngredientEntry {
+  amount: number;
+  ingredient: {
+    proteins: number;
+    carbs: number;
+    fats: number;
+  };
+}
+
 export function DailyMacroChart({ entries, timeRange }: DailyMacroChartProps) {
   const theme = useTheme();
 
@@ -44,7 +72,7 @@ export function DailyMacroChart({ entries, timeRange }: DailyMacroChartProps) {
       const dateData = dateMap.get(formattedDate);
 
       // Calculate nutrients for the entry
-      const calculateEntryNutrients = (entry) => {
+      const calculateEntryNutrients = (entry: FoodEntry) => {
         let totalProteins = 0;
         let totalCarbs = 0;
         let totalFats = 0;
@@ -54,7 +82,7 @@ export function DailyMacroChart({ entries, timeRange }: DailyMacroChartProps) {
           totalCarbs += entry.meal.totalNutrients.carbs;
           totalFats += entry.meal.totalNutrients.fats;
         } else if (entry.ingredients && entry.ingredients.length > 0) {
-          entry.ingredients.forEach((ingredient) => {
+          entry.ingredients.forEach((ingredient: IngredientEntry) => {
             // Calculate based on weight per 100g
             const multiplier = ingredient.amount / 100;
             totalProteins += ingredient.ingredient.proteins * multiplier;

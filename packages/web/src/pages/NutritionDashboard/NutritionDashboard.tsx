@@ -23,10 +23,9 @@ import { WeeklyCaloriesChart } from "./components/WeeklyCaloriesChart";
 import { MonthlyNutrientChart } from "./components/MonthlyNutrientChart";
 import { NutritionSummaryCards } from "./components/NutritionSummaryCards";
 import { NutrientDistributionChart } from "./components/NutrientDistributionChart";
+import { VitaminsMineralsChart } from "./components/VitaminsMineralsChart";
 import {
   subDays,
-  subWeeks,
-  subMonths,
   format,
   startOfWeek,
   endOfWeek,
@@ -36,7 +35,12 @@ import {
 import { pl } from "date-fns/locale";
 
 type TimeRange = "day" | "week" | "month";
-type ActiveTab = "overview" | "calories" | "nutrients" | "trends";
+type ActiveTab =
+  | "overview"
+  | "calories"
+  | "nutrients"
+  | "trends"
+  | "micronutrients";
 
 export function NutritionDashboard() {
   const { user } = useAuth();
@@ -91,7 +95,7 @@ export function NutritionDashboard() {
 
   // Handle time range change
   const handleTimeRangeChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newTimeRange: TimeRange | null
   ) => {
     if (newTimeRange !== null) {
@@ -101,7 +105,7 @@ export function NutritionDashboard() {
 
   // Handle tab change
   const handleTabChange = (
-    event: React.SyntheticEvent,
+    _event: React.SyntheticEvent,
     newValue: ActiveTab
   ) => {
     setActiveTab(newValue);
@@ -217,7 +221,8 @@ export function NutritionDashboard() {
       >
         <Tab label="Przegląd" value="overview" />
         <Tab label="Kalorie" value="calories" />
-        <Tab label="Składniki odżywcze" value="nutrients" />
+        <Tab label="Makroskładniki" value="nutrients" />
+        <Tab label="Mikroskładniki" value="micronutrients" />
         <Tab label="Trendy" value="trends" />
       </Tabs>
 
@@ -243,7 +248,7 @@ export function NutritionDashboard() {
                   timeRange={timeRange}
                 />
               </Grid>
-              <Grid item xs={12} md={8}>
+              <Grid item xs={12} md={12}>
                 <Card elevation={2} sx={{ height: "100%" }}>
                   <CardContent>
                     <Typography variant="h6" gutterBottom>
@@ -253,16 +258,6 @@ export function NutritionDashboard() {
                       entries={entries}
                       timeRange={timeRange}
                     />
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Card elevation={2} sx={{ height: "100%" }}>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Rozkład makroskładników
-                    </Typography>
-                    <NutrientDistributionChart entries={entries} />
                   </CardContent>
                 </Card>
               </Grid>
@@ -326,6 +321,25 @@ export function NutritionDashboard() {
                 </Card>
               </Grid>
             </Grid>
+          )}
+
+          {activeTab === "micronutrients" && (
+            <Card elevation={2}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Witaminy i minerały
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 3 }}
+                >
+                  Analiza spożycia witamin i minerałów w stosunku do dziennego
+                  zapotrzebowania
+                </Typography>
+                <VitaminsMineralsChart entries={entries} />
+              </CardContent>
+            </Card>
           )}
 
           {activeTab === "trends" && (
