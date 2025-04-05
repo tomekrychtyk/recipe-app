@@ -178,20 +178,6 @@ export function MealPlanner() {
     }
   };
 
-  // Function to check if a date is valid (not in the past)
-  const isDateInFuture = (date: Date | null) => {
-    if (!date) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    date.setHours(0, 0, 0, 0);
-    return date >= today;
-  };
-
-  // Custom date picker validation function
-  const validateDate = (date: Date | null) => {
-    return isDateInFuture(date ? new Date(date) : null);
-  };
-
   // Helper function to format time (HH:MM)
   const formatTime = (timeStr: string) => {
     const parts = timeStr.split(":");
