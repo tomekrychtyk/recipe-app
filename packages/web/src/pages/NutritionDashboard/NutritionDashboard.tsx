@@ -24,8 +24,11 @@ import { MonthlyNutrientChart } from "./components/MonthlyNutrientChart";
 import { NutritionSummaryCards } from "./components/NutritionSummaryCards";
 import { NutrientDistributionChart } from "./components/NutrientDistributionChart";
 import { VitaminsMineralsChart } from "./components/VitaminsMineralsChart";
+import { MicronutrientAnalysis } from "./components/MicronutrientAnalysis";
 import {
   subDays,
+  subWeeks,
+  subMonths,
   format,
   startOfWeek,
   endOfWeek,
@@ -95,7 +98,7 @@ export function NutritionDashboard() {
 
   // Handle time range change
   const handleTimeRangeChange = (
-    _event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLElement>,
     newTimeRange: TimeRange | null
   ) => {
     if (newTimeRange !== null) {
@@ -105,7 +108,7 @@ export function NutritionDashboard() {
 
   // Handle tab change
   const handleTabChange = (
-    _event: React.SyntheticEvent,
+    event: React.SyntheticEvent,
     newValue: ActiveTab
   ) => {
     setActiveTab(newValue);
@@ -248,16 +251,23 @@ export function NutritionDashboard() {
                   timeRange={timeRange}
                 />
               </Grid>
-              <Grid item xs={12} md={12}>
+              <Grid item xs={12} md={8}>
                 <Card elevation={2} sx={{ height: "100%" }}>
                   <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      Wykres kalorii
-                    </Typography>
-                    <WeeklyCaloriesChart
+                    <MicronutrientAnalysis
                       entries={entries}
                       timeRange={timeRange}
                     />
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Card elevation={2} sx={{ height: "100%" }}>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Rozkład makroskładników
+                    </Typography>
+                    <NutrientDistributionChart entries={entries} />
                   </CardContent>
                 </Card>
               </Grid>
