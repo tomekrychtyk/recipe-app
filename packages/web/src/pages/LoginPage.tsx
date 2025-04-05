@@ -277,7 +277,9 @@ export function LoginPage() {
           <Tabs
             value={activeTab}
             onChange={(_, newValue) => setActiveTab(newValue)}
-            centered
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{ mb: 3 }}
           >
             <Tab label="Zaloguj się" value="signin" />
