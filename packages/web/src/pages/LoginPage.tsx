@@ -296,7 +296,7 @@ export function LoginPage() {
               required
               sx={{
                 "& .MuiOutlinedInput-input": {
-                  backgroundColor: "black",
+                  backgroundColor: "#2b2b2b",
                 },
               }}
             />
