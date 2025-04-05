@@ -78,6 +78,9 @@ jobs:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          AWS_HOST: ${{ secrets.AWS_HOST }}
+          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
+          AWS_USERNAME: ${{ secrets.AWS_USERNAME }}
 
         run: |
           # Create deployment package with common package
@@ -113,6 +116,9 @@ jobs:
           echo "DIRECT_URL=\"${DIRECT_URL}\"" >> deploy/packages/server/.env
           echo "SUPABASE_URL=\"${SUPABASE_URL}\"" >> deploy/packages/server/.env
           echo "SUPABASE_SERVICE_ROLE_KEY=\"${SUPABASE_SERVICE_ROLE_KEY}\"" >> deploy/packages/server/.env
+          echo "AWS_HOST=\"${AWS_HOST}\"" >> deploy/packages/server/.env
+          echo "AWS_USERNAME=\"${AWS_USERNAME}\"" >> deploy/packages/server/.env
+          echo "AWS_SSH_KEY=\"${AWS_SSH_KEY}\"" >> deploy/packages/server/.env
 
           # Create deployment archive
           cd deploy
