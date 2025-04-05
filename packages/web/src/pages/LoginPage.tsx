@@ -177,7 +177,8 @@ export function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "background.default",
-        p: 3,
+        p: { xs: 1, sm: 3 },
+        width: "100%",
       }}
     >
       <motion.div
@@ -296,10 +297,8 @@ export function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              sx={{
-                "& .MuiOutlinedInput-input": {
-                  backgroundColor: "#2b2b2b",
-                },
+              InputProps={{
+                sx: { bgcolor: "#2b2b2b" },
               }}
             />
 

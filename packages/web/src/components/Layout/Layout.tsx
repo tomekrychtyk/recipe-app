@@ -112,7 +112,13 @@ export function Layout({ children }: LayoutProps) {
   );
 
   const authSection = user ? (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: { xs: 0.5, sm: 1 },
+      }}
+    >
       <Tooltip title="Dziennik posiłków">
         <IconButton
           onClick={() => navigate("/food-diary")}
@@ -121,9 +127,10 @@ export function Layout({ children }: LayoutProps) {
               location.pathname === "/food-diary"
                 ? "primary.main"
                 : "text.primary",
+            padding: { xs: 1, sm: 1.5 },
           }}
         >
-          <FoodBank sx={{ fontSize: 24 }} />
+          <FoodBank sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Plan posiłków">
@@ -134,9 +141,10 @@ export function Layout({ children }: LayoutProps) {
               location.pathname === "/meal-planner"
                 ? "primary.main"
                 : "text.primary",
+            padding: { xs: 1, sm: 1.5 },
           }}
         >
-          <CalendarMonth sx={{ fontSize: 24 }} />
+          <CalendarMonth sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Lista zakupów">
@@ -147,9 +155,10 @@ export function Layout({ children }: LayoutProps) {
               location.pathname === "/shopping-list"
                 ? "primary.main"
                 : "text.primary",
+            padding: { xs: 1, sm: 1.5 },
           }}
         >
-          <ShoppingCartIcon sx={{ fontSize: 24 }} />
+          <ShoppingCartIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Moje przepisy">
@@ -160,9 +169,10 @@ export function Layout({ children }: LayoutProps) {
               location.pathname === "/my-meals"
                 ? "primary.main"
                 : "text.primary",
+            padding: { xs: 1, sm: 1.5 },
           }}
         >
-          <MenuBookIcon sx={{ fontSize: 24 }} />
+          <MenuBookIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Dodaj przepis">
@@ -173,9 +183,10 @@ export function Layout({ children }: LayoutProps) {
               location.pathname === "/meals/new"
                 ? "primary.main"
                 : "text.primary",
+            padding: { xs: 1, sm: 1.5 },
           }}
         >
-          <AddIcon sx={{ fontSize: 24 }} />
+          <AddIcon sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </Tooltip>
       <IconButton
@@ -183,14 +194,17 @@ export function Layout({ children }: LayoutProps) {
         sx={{
           border: "2px solid",
           borderColor: "primary.main",
+          padding: { xs: 0.5, sm: 0.75 },
+          ml: { xs: 0.5, sm: 1 },
         }}
       >
         <Avatar
           sx={{
-            width: 32,
-            height: 32,
+            width: { xs: 28, sm: 32 },
+            height: { xs: 28, sm: 32 },
             bgcolor: "primary.main",
             color: "background.paper",
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
           }}
         >
           {user.email?.[0].toUpperCase()}
@@ -236,15 +250,19 @@ export function Layout({ children }: LayoutProps) {
       color="inherit"
       onClick={() => navigate("/login")}
       sx={{
-        ml: 2,
+        ml: { xs: 0.5, sm: 2 },
         borderColor: "primary.main",
         color: "primary.main",
         "&:hover": {
           borderColor: "primary.light",
           color: "primary.light",
         },
+        fontSize: { xs: "0.75rem", sm: "0.875rem" },
+        px: { xs: 1, sm: 2 },
+        py: { xs: 0.5, sm: 0.75 },
       }}
       variant="outlined"
+      size={isMobile ? "small" : "medium"}
     >
       Zaloguj się
     </Button>
@@ -269,24 +287,39 @@ export function Layout({ children }: LayoutProps) {
           width: "100%",
         }}
       >
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 0, mr: 3 }}>
-            🌟 dabelo.pl
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 0, mr: 1 }}>
+            <Box component="span" sx={{ mr: 0.5 }}>
+              🌟
+            </Box>
+            <Box
+              component="span"
+              sx={{ display: { xs: "none", sm: "inline" } }}
+            >
+              dabelo.pl
+            </Box>
           </Typography>
 
           {isMobile ? (
             <>
-              <Box sx={{ flexGrow: 1 }} />
-              {authSection}
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                sx={{ ml: 2 }}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexGrow: 1,
+                  justifyContent: "flex-end",
+                }}
               >
-                <MenuIcon />
-              </IconButton>
+                {authSection}
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="end"
+                  onClick={handleDrawerToggle}
+                  sx={{ ml: { xs: 0.5, sm: 1 } }}
+                >
+                  <MenuIcon />
+                </IconButton>
+              </Box>
             </>
           ) : (
             <>
