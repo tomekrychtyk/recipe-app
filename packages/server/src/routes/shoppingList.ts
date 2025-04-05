@@ -285,7 +285,6 @@ router.post("/generate-from-planned", async (req: Request, res: Response) => {
       });
     }
 
-    // Create Date objects from the input strings
     const start = new Date(startDate);
     const end = new Date(endDate);
 
