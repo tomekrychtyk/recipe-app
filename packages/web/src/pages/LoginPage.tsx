@@ -177,7 +177,7 @@ export function LoginPage() {
         alignItems: "center",
         justifyContent: "center",
         bgcolor: "background.default",
-        p: { xs: 1, sm: 3 },
+        p: { xs: 0, sm: 3 },
         width: "100%",
       }}
     >

@@ -31,7 +31,7 @@ export function App() {
             <Box sx={{ width: "100vw", minHeight: "100vh" }}>
               <BrowserRouter>
                 <Layout>
-                  <Box sx={{ width: "100%", p: 4 }}>
+                  <Box sx={{ width: "100%", p: { xs: 3, sm: 4 } }}>
                     <Routes>
                       <Route path="/" element={<HomePage />} />
                       <Route path="/login" element={<LoginPage />} />
