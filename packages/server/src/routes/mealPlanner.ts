@@ -143,24 +143,37 @@ router.post("/:id/add-to-diary", async (req: Request, res: Response) => {
       return res.status(404).json({ errors: ["Planned meal not found"] });
     }
 
-    // Create a food diary entry from the planned meal
-    const diaryEntry = await prisma.foodDiaryEntry.create({
-      data: {
-        userId: plannedMeal.userId,
-        date: new Date(), // Today's date
-        time: plannedMeal.time,
-        name: plannedMeal.name,
-        mealId: plannedMeal.mealId,
-        ingredients: {
-          create: plannedMeal.ingredients.map((ing) => ({
-            ingredientId: ing.ingredientId,
-            amount: ing.amount,
-          })),
+    // Use a transaction to ensure both operations succeed or fail together
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Create a food diary entry from the planned meal
+      const diaryEntry = await tx.foodDiaryEntry.create({
+        data: {
+          userId: plannedMeal.userId,
+          date: new Date(), // Today's date
+          time: plannedMeal.time,
+          name: plannedMeal.name,
+          mealId: plannedMeal.mealId,
+          ingredients: {
+            create: plannedMeal.ingredients.map((ing) => ({
+              ingredientId: ing.ingredientId,
+              amount: ing.amount,
+            })),
+          },
         },
-      },
+      });
+
+      // 2. Delete the planned meal
+      await tx.plannedMeal.delete({
+        where: { id },
+      });
+
+      return diaryEntry;
     });
 
-    res.status(201).json(diaryEntry);
+    res.status(201).json({
+      message: "Meal added to diary and removed from planner",
+      entry: result,
+    });
   } catch (error) {
     console.error("Failed to add planned meal to diary:", error);
     res.status(500).json({

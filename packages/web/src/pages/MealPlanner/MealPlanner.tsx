@@ -16,49 +16,34 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   Typography,
-  Paper,
-  Tooltip,
   Alert,
-  CircularProgress,
 } from "@mui/material";
-import {
-  Add as AddIcon,
-  Delete as DeleteIcon,
-  PlaylistAdd,
-} from "@mui/icons-material";
+import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { useGetMealsQuery } from "@/store/api/meals";
 import { useGetIngredientsQuery } from "@/store/api/ingredients";
 import { useAuth } from "@/contexts/AuthContext";
-import type { Ingredient, Meal } from "@food-recipe-app/common";
+import type { Ingredient } from "@food-recipe-app/common";
 import {
   useAddPlannedMealMutation,
   useGetPlannedMealsQuery,
   useDeletePlannedMealMutation,
   useAddPlannedMealToDiaryMutation,
 } from "@/store/api/mealPlanner";
-
-type EntryType = "ingredients" | "public_meals" | "my_meals";
-
-interface PlannedMealEntry {
-  time: Date | null;
-  name: string;
-  type: EntryType;
-  selectedMeal: Meal | null;
-  ingredients: IngredientWithQuantity[];
-}
-
-interface IngredientWithQuantity {
-  ingredient: Ingredient;
-  amount: number;
-}
+import { DailyNutritionSummary } from "./components/DailyNutritionSummary";
+import { DetailedNutritionBreakdown } from "./components/DetailedNutritionBreakdown";
+import { TimelineEntries } from "./components/TimelineEntries";
+import { PlannedMealEntry, EntryType } from "./types";
+import { useCreateShoppingListMutation } from "@/store/api/shoppingList";
 
 export function MealPlanner() {
   const { user } = useAuth();
+
+  // Get today's date at midnight for comparison
   const today = new Date();
-  today.setHours(0, 0, 0, 0); // Set time to midnight for comparison
+  today.setHours(0, 0, 0, 0);
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(today);
   const [isAddEntryDialogOpen, setIsAddEntryDialogOpen] = useState(false);
@@ -76,10 +61,9 @@ export function MealPlanner() {
 
   const [addPlannedMeal, { isLoading: isAddingMeal }] =
     useAddPlannedMealMutation();
-  const [deletePlannedMeal, { isLoading: isDeletingMeal }] =
-    useDeletePlannedMealMutation();
-  const [addPlannedMealToDiary, { isLoading: isAddingToDiary }] =
-    useAddPlannedMealToDiaryMutation();
+  const [deletePlannedMeal] = useDeletePlannedMealMutation();
+  const [addPlannedMealToDiary] = useAddPlannedMealToDiaryMutation();
+  const [createShoppingList] = useCreateShoppingListMutation();
 
   // Fetch data for dropdowns
   const { data: allMeals = [] } = useGetMealsQuery({});
@@ -130,7 +114,6 @@ export function MealPlanner() {
       setIsAddEntryDialogOpen(false);
     } catch (error) {
       console.error("Failed to save planned meal:", error);
-      // Show error message to user
       alert("Nie udało się zapisać zaplanowanego posiłku");
     }
   };
@@ -170,21 +153,43 @@ export function MealPlanner() {
 
   const handleAddToDiary = async (id: number) => {
     try {
+      // First add the meal to the food diary
       await addPlannedMealToDiary(id).unwrap();
-      alert("Posiłek został dodany do dziennika");
+
+      // Then delete it from the meal planner
+      await deletePlannedMeal(id).unwrap();
+
+      // Show success message
+      alert("Posiłek został dodany do dziennika i usunięty z planera");
     } catch (error) {
       console.error("Failed to add planned meal to diary:", error);
       alert("Nie udało się dodać posiłku do dziennika");
     }
   };
 
-  // Helper function to format time (HH:MM)
-  const formatTime = (timeStr: string) => {
-    const parts = timeStr.split(":");
-    if (parts.length >= 2) {
-      return `${parts[0]}:${parts[1]}`;
+  // Handle adding a planned meal to a new shopping list
+  const handleAddToShoppingList = async (mealId: number) => {
+    if (!user) return;
+
+    const mealToAdd = plannedMeals.find((meal) => meal.id === mealId);
+    if (!mealToAdd) return;
+
+    try {
+      const dateStr = mealToAdd.date.split("T")[0];
+      await createShoppingList({
+        userId: user.id,
+        name: `Lista zakupów dla: ${mealToAdd.name} (${dateStr})`,
+        items: mealToAdd.ingredients.map((ing) => ({
+          ingredientId: ing.ingredient.id,
+          amount: ing.amount,
+        })),
+      }).unwrap();
+
+      alert("Pomyślnie utworzono listę zakupów");
+    } catch (error) {
+      console.error("Failed to create shopping list:", error);
+      alert("Nie udało się utworzyć listy zakupów");
     }
-    return timeStr;
   };
 
   if (!user) {
@@ -222,6 +227,7 @@ export function MealPlanner() {
               textField: {
                 size: "small",
                 sx: { minWidth: 150 },
+                helperText: "Wybierz datę (tylko aktualna i przyszłe)",
               },
             }}
           />
@@ -234,79 +240,18 @@ export function MealPlanner() {
           </Button>
         </Box>
 
-        {isLoading ? (
-          <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-            <CircularProgress />
-          </Box>
-        ) : plannedMeals.length === 0 ? (
-          <Paper sx={{ p: 3, textAlign: "center" }}>
-            <Typography color="text.secondary">
-              Brak zaplanowanych posiłków na ten dzień
-            </Typography>
-          </Paper>
-        ) : (
-          <Paper sx={{ p: 2 }}>
-            <List>
-              {[...plannedMeals]
-                .sort((a, b) => a.time.localeCompare(b.time))
-                .map((meal) => (
-                  <ListItem
-                    key={meal.id}
-                    secondaryAction={
-                      <Box>
-                        {isSelectedDateToday && (
-                          <Tooltip title="Dodaj do dziennika">
-                            <IconButton
-                              edge="end"
-                              onClick={() => handleAddToDiary(meal.id)}
-                              disabled={isAddingToDiary}
-                              sx={{ mr: 1 }}
-                            >
-                              <PlaylistAdd />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                        <Tooltip title="Usuń">
-                          <IconButton
-                            edge="end"
-                            onClick={() => handleDeletePlannedMeal(meal.id)}
-                            disabled={isDeletingMeal}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    }
-                  >
-                    <ListItemText
-                      primary={
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <Typography
-                            component="span"
-                            variant="body1"
-                            sx={{ mr: 2, fontWeight: "medium" }}
-                          >
-                            {formatTime(meal.time)}
-                          </Typography>
-                          {meal.name}
-                        </Box>
-                      }
-                      secondary={
-                        meal.meal
-                          ? `Posiłek: ${meal.meal.name}`
-                          : `Składniki: ${meal.ingredients
-                              .map(
-                                (ing) =>
-                                  `${ing.ingredient.name} (${ing.amount}g)`
-                              )
-                              .join(", ")}`
-                      }
-                    />
-                  </ListItem>
-                ))}
-            </List>
-          </Paper>
-        )}
+        <DailyNutritionSummary entries={plannedMeals} isLoading={isLoading} />
+
+        <TimelineEntries
+          entries={plannedMeals}
+          onDelete={handleDeletePlannedMeal}
+          onAddToDiary={handleAddToDiary}
+          onAddToShoppingList={handleAddToShoppingList}
+          isSelectedDateToday={isSelectedDateToday}
+          isLoading={isLoading}
+        />
+
+        <DetailedNutritionBreakdown entries={plannedMeals} />
 
         <Dialog
           open={isAddEntryDialogOpen}

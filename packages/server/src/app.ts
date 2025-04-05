@@ -3,6 +3,8 @@ import cors from "cors";
 import ingredientsRoutes from "./routes/ingredients";
 import mealsRoutes from "./routes/meals";
 import foodDiaryRoutes from "./routes/foodDiary";
+import mealPlannerRoutes from "./routes/mealPlanner";
+import shoppingListRoutes from "./routes/shoppingList";
 
 const app = express();
 
@@ -36,5 +38,7 @@ app.use(express.json());
 app.use("/api/ingredients", ingredientsRoutes);
 app.use("/api/meals", mealsRoutes);
 app.use("/api/food-diary", foodDiaryRoutes);
+app.use("/api/meal-planner", mealPlannerRoutes);
+app.use("/api/shopping-list", shoppingListRoutes);
 
 export default app;

@@ -11,40 +11,40 @@ export interface Ingredient {
   categoryId: string;
 
   // Basic nutrients
-  proteins: number;
-  carbs: number;
-  fats: number;
-  calories: number;
+  proteins: number; // g
+  carbs: number; // g
+  fats: number; // g
+  calories: number; // kcal
 
   // Vitamins
-  vitaminA?: number | null;
-  vitaminD?: number | null;
-  vitaminE?: number | null;
-  vitaminK?: number | null;
-  vitaminC?: number | null;
-  thiamin?: number | null;
-  riboflavin?: number | null;
-  niacin?: number | null;
-  pantothenicAcid?: number | null;
-  vitaminB6?: number | null;
-  biotin?: number | null;
-  folate?: number | null;
-  vitaminB12?: number | null;
+  vitaminA?: number; // mcg
+  vitaminD?: number; // mcg
+  vitaminE?: number; // mg
+  vitaminK?: number; // mcg
+  vitaminC?: number; // mg
+  thiamin?: number; // mg
+  riboflavin?: number; // mg
+  niacin?: number; // mg
+  pantothenicAcid?: number; // mg
+  vitaminB6?: number; // mg
+  biotin?: number; // mcg
+  folate?: number; // mcg
+  vitaminB12?: number; // mcg
 
   // Minerals
-  calcium?: number | null;
-  iron?: number | null;
-  magnesium?: number | null;
-  phosphorus?: number | null;
-  potassium?: number | null;
-  sodium?: number | null;
-  zinc?: number | null;
-  copper?: number | null;
-  manganese?: number | null;
-  selenium?: number | null;
-  chromium?: number | null;
-  molybdenum?: number | null;
-  iodine?: number | null;
+  calcium?: number; // mg
+  iron?: number; // mg
+  magnesium?: number; // mg
+  phosphorus?: number; // mg
+  potassium?: number; // mg
+  sodium?: number; // mg
+  zinc?: number; // mg
+  copper?: number; // mg
+  manganese?: number; // mg
+  selenium?: number; // mcg
+  chromium?: number; // mcg
+  molybdenum?: number; // mcg
+  iodine?: number; // mcg
 
   // Timestamps
   createdAt: string;
@@ -232,4 +232,22 @@ export interface CreateFoodDiaryEntryInput {
     ingredientId: number;
     amount: number;
   }>;
+}
+
+export interface ShoppingList {
+  id: number;
+  userId: string;
+  name: string;
+  items: ShoppingListItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ShoppingListItem {
+  id: number;
+  shoppingListId: number;
+  ingredientId: number;
+  ingredient: Ingredient;
+  amount: number;
+  isDone: boolean;
 }

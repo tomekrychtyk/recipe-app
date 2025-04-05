@@ -27,6 +27,7 @@ import {
   Person as PersonIcon,
   Payments as PaymentsIcon,
   Kitchen as KitchenIcon,
+  ShoppingCart as ShoppingCartIcon,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -136,6 +137,19 @@ export function Layout({ children }: LayoutProps) {
           }}
         >
           <CalendarMonth sx={{ fontSize: 24 }} />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Lista zakupów">
+        <IconButton
+          onClick={() => navigate("/shopping-list")}
+          sx={{
+            color:
+              location.pathname === "/shopping-list"
+                ? "primary.main"
+                : "text.primary",
+          }}
+        >
+          <ShoppingCartIcon sx={{ fontSize: 24 }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Moje przepisy">

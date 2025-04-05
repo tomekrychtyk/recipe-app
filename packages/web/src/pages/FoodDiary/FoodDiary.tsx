@@ -15,6 +15,7 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Typography,
 } from "@mui/material";
 import { Add as AddIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import { useState } from "react";
@@ -147,6 +148,98 @@ export function FoodDiary() {
   return (
     <Box sx={{ maxWidth: 800, mx: "auto", p: { xs: 1, sm: 3 } }}>
       <Stack spacing={3}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Dziennik posiłków
+        </Typography>
+
+        {/* <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Paper
+            elevation={0}
+            sx={{
+              p: 2,
+              bgcolor: "rgba(25, 118, 210, 0.05)",
+              borderRadius: 2,
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{
+                color: "primary.main",
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                mb: 1,
+              }}
+            >
+              <motion.span
+                animate={{ rotate: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}
+              >
+                📝
+              </motion.span>
+              Monitoruj swoje odżywianie
+              <motion.span
+                animate={{ rotate: [0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}
+              >
+                🥗
+              </motion.span>
+            </Typography>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              <Typography align="center" variant="body1" sx={{ mb: 2 }}>
+                Dziennik posiłków pomaga Ci śledzić, co jesz każdego dnia.
+                Monitoruj swoją dietę, kontroluj kalorie i sprawdzaj zawartość
+                składników odżywczych, aby podejmować zdrowsze decyzje
+                żywieniowe. Twój osobisty asystent zdrowego stylu życia!
+              </Typography>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 3,
+                  flexWrap: "wrap",
+                  color: "text.secondary",
+                  fontSize: "0.875rem",
+                  "& > div": {
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  },
+                }}
+              >
+                <div>
+                  <span>📊</span> <span>Śledź swoje kalorie</span>
+                </div>
+                <div>
+                  <span>⚡</span> <span>Analizuj makroskładniki</span>
+                </div>
+                <div>
+                  <span>🍎</span> <span>Zdrowe wybory</span>
+                </div>
+              </Box>
+            </motion.div>
+          </Paper>
+        </motion.div> */}
+
         <Box
           sx={{
             display: "flex",
