@@ -18,6 +18,7 @@ model User {
   updated_at        DateTime @updatedAt @db.Timestamptz
   meals             Meal[]
   diaryEntries      FoodDiaryEntry[]
+  plannedMeals      PlannedMeal[]
   subscription      Subscription?
 
   @@map("users")
@@ -82,22 +83,24 @@ model Ingredient {
   molybdenum  Float?  // mcg
   iodine      Float?  // mcg
 
-  meals                MealIngredient[]
-  foodDiaryIngredients FoodDiaryIngredient[]
+  meals                   MealIngredient[]
+  foodDiaryIngredients    FoodDiaryIngredient[]
+  plannedMealIngredients  PlannedMealIngredient[]
 }
 
 model Meal {
-  id          Int              @id @default(autoincrement())
-  name        String
-  categoryId  String
-  description String?
-  thumbnailUrl String?
-  ingredients MealIngredient[]
-  diaryEntries  FoodDiaryEntry[]
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  userId      String?          @db.Uuid
-  user        User?            @relation(fields: [userId], references: [id])
+  id              Int              @id @default(autoincrement())
+  name            String
+  categoryId      String
+  description     String?
+  thumbnailUrl    String?
+  ingredients     MealIngredient[]
+  diaryEntries    FoodDiaryEntry[]
+  plannedMeals    PlannedMeal[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  userId          String?          @db.Uuid
+  user            User?            @relation(fields: [userId], references: [id])
 }
 
 model MealIngredient {
@@ -136,4 +139,31 @@ model FoodDiaryIngredient {
   amount       Float
 
   @@map("food_diary_ingredients")
+}
+
+model PlannedMeal {
+  id          Int                     @id @default(autoincrement())
+  userId      String                  @db.Uuid
+  date        DateTime                @db.Date
+  time        DateTime                @db.Time
+  name        String
+  mealId      Int?
+  meal        Meal?                   @relation(fields: [mealId], references: [id])
+  ingredients PlannedMealIngredient[]
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  user        User                    @relation(fields: [userId], references: [id])
+
+  @@map("planned_meals")
+}
+
+model PlannedMealIngredient {
+  id            Int         @id @default(autoincrement())
+  plannedMealId Int
+  plannedMeal   PlannedMeal @relation(fields: [plannedMealId], references: [id], onDelete: Cascade)
+  ingredientId  Int
+  ingredient    Ingredient  @relation(fields: [ingredientId], references: [id])
+  amount        Float
+
+  @@map("planned_meal_ingredients")
 }
