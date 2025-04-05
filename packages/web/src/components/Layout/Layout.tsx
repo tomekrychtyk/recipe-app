@@ -21,6 +21,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
   FoodBank,
+  CalendarMonth,
   Add as AddIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,
@@ -122,6 +123,19 @@ export function Layout({ children }: LayoutProps) {
           }}
         >
           <FoodBank sx={{ fontSize: 24 }} />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Plan posiłków">
+        <IconButton
+          onClick={() => navigate("/meal-planner")}
+          sx={{
+            color:
+              location.pathname === "/meal-planner"
+                ? "primary.main"
+                : "text.primary",
+          }}
+        >
+          <CalendarMonth sx={{ fontSize: 24 }} />
         </IconButton>
       </Tooltip>
       <Tooltip title="Moje przepisy">

@@ -18,6 +18,7 @@ import { AuthCallbackPage } from "./pages/AuthCallbackPage";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { FoodDiary } from "./pages/FoodDiary/FoodDiary";
 import { Pricing } from "./pages/Pricing/Pricing";
+import { MealPlanner } from "./pages/MealPlanner";
 
 export function App() {
   return (
@@ -65,6 +66,7 @@ export function App() {
                       >
                         <Route path="/my-meals" element={<MyMeals />} />
                         <Route path="/food-diary" element={<FoodDiary />} />
+                        <Route path="/meal-planner" element={<MealPlanner />} />
                         <Route path="/meals/new" element={<AddMeal />} />
                         <Route
                           path="/meals/:id/edit"
